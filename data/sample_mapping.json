@@ -1,0 +1,81 @@
+{
+    "mapping_id": "MAP001",
+    "project_name": "Retail_Customer_Insights",
+    "source_system": "PostgreSQL_DB",
+    "target_system": "AWS_Redshift",
+    "tables": [
+      {
+        "source_table": "customer_master",
+        "target_table": "dim_customer",
+        "column_mappings": [
+          {
+            "source_column": "customer_id",
+            "target_column": "cust_id",
+            "data_type": "int",
+            "transformation": "none"
+          },
+          {
+            "source_column": "first_name",
+            "target_column": "cust_fname",
+            "data_type": "varchar",
+            "transformation": "capitalize"
+          },
+          {
+            "source_column": "last_name",
+            "target_column": "cust_lname",
+            "data_type": "varchar",
+            "transformation": "capitalize"
+          },
+          {
+            "source_column": "dob",
+            "target_column": "birth_date",
+            "data_type": "date",
+            "transformation": "format_yyyy_mm_dd"
+          },
+          {
+            "source_column": "email",
+            "target_column": "cust_email",
+            "data_type": "varchar",
+            "transformation": "lowercase"
+          }
+        ]
+      },
+      {
+        "source_table": "transactions",
+        "target_table": "fact_sales",
+        "column_mappings": [
+          {
+            "source_column": "txn_id",
+            "target_column": "transaction_id",
+            "data_type": "varchar",
+            "transformation": "none"
+          },
+          {
+            "source_column": "customer_id",
+            "target_column": "cust_id",
+            "data_type": "int",
+            "transformation": "none"
+          },
+          {
+            "source_column": "txn_date",
+            "target_column": "transaction_date",
+            "data_type": "timestamp",
+            "transformation": "format_yyyy_mm_dd_hh_mm_ss"
+          },
+          {
+            "source_column": "amount",
+            "target_column": "sale_amount",
+            "data_type": "decimal(10,2)",
+            "transformation": "round_to_2_decimal"
+          },
+          {
+            "source_column": "payment_method",
+            "target_column": "payment_mode",
+            "data_type": "varchar",
+            "transformation": "map_card_types"
+          }
+        ]
+      }
+    ]
+  }
+  
