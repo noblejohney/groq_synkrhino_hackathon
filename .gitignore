@@ -1,13 +1,3 @@
-*.pyc
-*.log
-**/*.log
-static/
-logs/
-
-# Environment variables and sensitive data
 .env
-*.env
-
-# virtual environments
-.env/
-
+__pycache__/
+*.pyc
