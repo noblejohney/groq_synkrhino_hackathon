@@ -1,106 +1,63 @@
+# app.py
+import json
 import streamlit as st
-from groq_interface.groq_client import GroqClient
+from groq_interface.agent import SQLChatAgentREST
 
-# --------------------------------------------------------------
-# 1️⃣ Page config
-# --------------------------------------------------------------
-st.set_page_config(page_title="Grook", page_icon="💬", layout="centered")
+st.set_page_config(page_title="Groq + Postgres SQL Chat", page_icon="🤖", layout="centered", initial_sidebar_state="collapsed")
 
-# --------------------------------------------------------------
-# 2️⃣ Sidebar
-# --------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### ⚙️ Chat Settings")
-    model = st.selectbox(
-        "Model",
-        ["llama3-70b-8192", "llama3-8b-8192"],
-        index=0,
-    )
-    temperature = st.slider("Temperature", 0.0, 1.5, 0.7, 0.1)
-    sys_prompt = st.text_area("System Prompt", "You are a helpful assistant.", height=100)
-
-    if st.button("🧹 Clear chat"):
-        st.session_state.messages = [
-            {"role": "assistant", "content": "Hi! I'm Grook. How can I help today?"}
-        ]
+    st.markdown("### ⚙️ Settings")
+    model = st.selectbox("Model", ["llama3-70b-8192", "llama3-8b-8192","llama-3.3-70b-versatile","openai/gpt-oss-120b","Claude 3.5 Sonnet","GPT‑4 Turbo"], 0)
+    temperature = st.slider("Temperature", 0.0, 1.0, 0.0, 0.1)  # keep 0 for SQL accuracy
+    schema = st.text_input("Schema", "synkrino")
+    if st.button("🧹 Clear"):
+        st.session_state.messages = []
         st.rerun()
 
-    st.markdown("---")
-    st.caption("How may I assist you?")
-
-# --------------------------------------------------------------
-# 3️⃣ Session state – message history
-# --------------------------------------------------------------
 if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "assistant", "content": "Hi! I'm Grook. How can I help today?"}
-    ]
+    st.session_state.messages = [{
+        "role": "assistant",
+        "content": "Hi, I'm GROOK! Your Assistant in Data Engineering. What can I help you with?’)."
+    }]
 
-# --------------------------------------------------------------
-# 4️⃣ Groq client – single‑instance
-# --------------------------------------------------------------
-groq = GroqClient(model=model)   # <-- passes chosen model
+@st.cache_resource(show_spinner=False)
+def get_agent(m, t, s):
+    return SQLChatAgentREST(model=m, temperature=t, schema=s)
 
-# --------------------------------------------------------------
-# 5️⃣ Helper – ask Groq
-# --------------------------------------------------------------
-def llm_reply(messages, temperature):
-    """
-    Pass the conversation to Groq and return the reply.
+agent = get_agent(model, temperature, schema)
 
-    Parameters
-    ----------
-    messages : list[dict]
-        The full conversation (system + history).
-    temperature : float
-        Sampling temperature (currently unused in Groq, but kept for API symmetry).
-
-    Returns
-    -------
-    str
-        The assistant's reply text.
-    """
-    # We ignore `temperature` because Groq’s API does not expose it yet.
-    # If you use an LLM that does support it, add `"temperature": temperature` to the payload.
-    return groq.chat(messages)
-
-# --------------------------------------------------------------
-# 6️⃣ Render chat bubbles
-# --------------------------------------------------------------
 st.markdown("<h2 style='text-align:center;'>WELCOME TO SYNKRHINO</h2>", unsafe_allow_html=True)
 
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"], avatar="🤖" if msg["role"] == "assistant" else "🧑"):
-        st.markdown(msg["content"])
+for m in st.session_state.messages:
+    with st.chat_message(m["role"], avatar=("🤖" if m["role"]=="assistant" else "🧑")):
+        st.markdown(m["content"])
 
-# --------------------------------------------------------------
-# 7️⃣ Chat input
-# --------------------------------------------------------------
-user_input = st.chat_input("Type your message…")
-
-if user_input:
-    # 1️⃣ Store user message
-    st.session_state.messages.append({"role": "user", "content": user_input})
-
-    # 2️⃣ Show user message immediately
+question = st.chat_input("Please ask questions...")
+if question:
+    st.session_state.messages.append({"role":"user","content":question})
     with st.chat_message("user", avatar="🧑"):
-        st.markdown(user_input)
+        st.markdown(question)
 
-    # 3️⃣ Build conversation for Groq
-    convo = []
-    if sys_prompt.strip():
-        convo.append({"role": "system", "content": sys_prompt.strip()})
-    convo.extend(st.session_state.messages)
-
-    # 4️⃣ Ask Groq – spinner
     with st.chat_message("assistant", avatar="🤖"):
         with st.spinner("Thinking…"):
             try:
-                answer = llm_reply(convo, temperature)
-            except Exception as exc:
-                answer = f"⚠️ Error contacting Groq: {exc}"
+                out = agent.answer(question)  # has sql, rows (capped), truncated flag
+                st.markdown(out["answer"])
 
-        st.markdown(answer)
+                with st.expander("ℹ️ SQL & Result"):
+                    st.code(out["sql"], language="sql")
+                    st.dataframe(out["rows"])  # shows up to UI_MAX_ROWS rows
 
-    # 5️⃣ Persist assistant reply
-    st.session_state.messages.append({"role": "assistant", "content": answer})
+                    if out["truncated"]:
+                        st.warning(f"Showing first {len(out['rows'])} rows (truncated for UI).")
+                        if st.button("⬇️ Download full results as CSV"):
+                            try:
+                                csv_path = agent.export_full_csv(out["sql"])
+                                st.success(f"CSV ready: {csv_path}")
+                                st.markdown(f"[Download CSV]({csv_path})")
+                            except Exception as ex:
+                                st.error(f"Export failed: {ex}")
+            except Exception as e:
+                err = f"⚠️ {e}"
+                st.markdown(err)
+                st.session_state.messages.append({"role":"assistant","content":err})
