@@ -1,0 +1,1971 @@
+
+CREATE TABLE synkrino."Logs" (
+	id SERIAL NOT NULL, 
+	log_time TIMESTAMP WITH TIME ZONE, 
+	loglevel VARCHAR(200), 
+	message VARCHAR(200), 
+	CONSTRAINT "Logs_pkey" PRIMARY KEY (id)
+)
+
+/*
+3 rows from Logs table:
+id	log_time	loglevel	message
+
+*/
+
+
+CREATE TABLE synkrino."synkrino.custom_validation_result_difference_v2" (
+	id SERIAL NOT NULL, 
+	custom_validation_id INTEGER, 
+	file_type INTEGER, 
+	file_path VARCHAR(200), 
+	file_name VARCHAR(200), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT "synkrino.custom_validation_result_difference_v2_pkey" PRIMARY KEY (id), 
+	CONSTRAINT "synkrino.custom_validation_result_dif_custom_validation_id_fkey" FOREIGN KEY(custom_validation_id) REFERENCES synkrino.custom_validation_result_v2 (id)
+)
+
+/*
+3 rows from synkrino.custom_validation_result_difference_v2 table:
+id	custom_validation_id	file_type	file_path	file_name	created_at	updated_at
+
+*/
+
+
+CREATE TABLE synkrino."synkrino.execution_logs_v2" (
+	id SERIAL NOT NULL, 
+	execution_id VARCHAR, 
+	operation_id VARCHAR, 
+	validation_type VARCHAR, 
+	source_query VARCHAR, 
+	target_query VARCHAR, 
+	start_time TIMESTAMP WITHOUT TIME ZONE, 
+	end_time TIMESTAMP WITHOUT TIME ZONE, 
+	status VARCHAR, 
+	log_steps VARCHAR, 
+	CONSTRAINT "synkrino.execution_logs_v2_pkey" PRIMARY KEY (id)
+)
+
+/*
+3 rows from synkrino.execution_logs_v2 table:
+id	execution_id	operation_id	validation_type	source_query	target_query	start_time	end_time	status	log_steps
+
+*/
+
+
+CREATE TABLE synkrino.col_classification (
+	col_id BIGINT, 
+	test_execution_id BIGINT, 
+	mapping_id BIGINT, 
+	catalog_name VARCHAR, 
+	databasetype VARCHAR, 
+	schema_name VARCHAR, 
+	table_name VARCHAR, 
+	column_names VARCHAR, 
+	column_type VARCHAR, 
+	last_updated_dtae VARCHAR
+)
+
+/*
+3 rows from col_classification table:
+col_id	test_execution_id	mapping_id	catalog_name	databasetype	schema_name	table_name	column_names	column_type	last_updated_dtae
+
+*/
+
+
+CREATE TABLE synkrino.column_classification (
+	datatype VARCHAR, 
+	column_classification VARCHAR(255)
+)
+
+/*
+3 rows from column_classification table:
+datatype	column_classification
+integer	Numeric
+smallint	Numeric
+tinyint	Numeric
+*/
+
+
+CREATE TABLE synkrino.column_detail_classification (
+	datatype VARCHAR, 
+	column_classification VARCHAR(255)
+)
+
+/*
+3 rows from column_detail_classification table:
+datatype	column_classification
+
+*/
+
+
+CREATE TABLE synkrino.column_metadata (
+	test_execution_id INTEGER NOT NULL, 
+	catalog_name TEXT, 
+	table_schema TEXT, 
+	table_name TEXT, 
+	column_name TEXT, 
+	datatype TEXT, 
+	column_classification TEXT, 
+	data_length INTEGER, 
+	data_precision INTEGER, 
+	ordinal_position BIGINT, 
+	comment TEXT, 
+	last_update_date DATE NOT NULL
+)
+
+/*
+3 rows from column_metadata table:
+test_execution_id	catalog_name	table_schema	table_name	column_name	datatype	column_classification	data_length	data_precision	ordinal_position	comment	last_update_date
+2	synkrinosourcedb	humanresources	ctrl_all_table_statistics	is_active	char	Non_numeric	1	0	4	None	2023-10-13
+2	synkrinosourcedb	humanresources	ctrl_all_table_statistics	row_num	integer	Numeric	0	0	1	None	2023-10-13
+2	synkrinosourcedb	humanresources	ctrl_all_table_statistics	schema_name	varchar	Non_numeric	50	0	2	None	2023-10-13
+*/
+
+
+CREATE TABLE synkrino.column_metadata_testing (
+	test_execution_id INTEGER NOT NULL, 
+	catalog_name TEXT, 
+	table_schema TEXT, 
+	table_name TEXT, 
+	column_name TEXT, 
+	datatype TEXT, 
+	column_classification TEXT, 
+	data_length INTEGER, 
+	data_precision INTEGER, 
+	ordinal_position BIGINT, 
+	comment TEXT, 
+	last_update_date DATE NOT NULL
+)
+
+/*
+3 rows from column_metadata_testing table:
+test_execution_id	catalog_name	table_schema	table_name	column_name	datatype	column_classification	data_length	data_precision	ordinal_position	comment	last_update_date
+1	synkrinosourcedb	humanresources	employees	employeeid	integer	None	10	0	1	None	2024-07-05
+1	synkrinosourcedb	humanresources	employees	firstname	varchar	None	50	0	2	None	2024-07-05
+1	synkrinosourcedb	humanresources	employees	lastname	varchar	None	50	0	3	None	2024-07-05
+*/
+
+
+CREATE TABLE synkrino.column_profile (
+	profiling_id INTEGER NOT NULL, 
+	test_execution_id INTEGER, 
+	catalog_name TEXT, 
+	schema_name TEXT, 
+	table_name TEXT, 
+	column_name TEXT, 
+	totalcount INTEGER, 
+	meanvalue REAL, 
+	minvalue REAL, 
+	maxvalue REAL, 
+	sumvalue REAL, 
+	lowermedianvalue REAL, 
+	uppermedianvalue REAL, 
+	nullcount INTEGER, 
+	notnullcount INTEGER, 
+	maxdate DATE, 
+	mindate DATE, 
+	maxlength INTEGER, 
+	minlength INTEGER, 
+	distinctcount INTEGER, 
+	last_update_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
+)
+
+/*
+3 rows from column_profile table:
+profiling_id	test_execution_id	catalog_name	schema_name	table_name	column_name	totalcount	meanvalue	minvalue	maxvalue	sumvalue	lowermedianvalue	uppermedianvalue	nullcount	notnullcount	maxdate	mindate	maxlength	minlength	distinctcount	last_update_date
+3194	65	synkrinosourcedb	production	culture	modifieddate	None	None	None	None	None	None	None	0	8	2008-04-30	2008-04-30	None	None	None	2023-10-25 15:20:55.307243
+3194	65	synkrinosourcedb	production	product	modifieddate	None	None	None	None	None	None	None	0	504	2014-02-08	2014-02-08	None	None	None	2023-10-25 15:31:49.799149
+3209	65	synkrinosourcedb	production	productmodelillustration	modifieddate	None	None	None	None	None	None	None	0	7	2014-01-09	2014-01-09	None	None	None	2023-10-25 18:38:09.709571
+*/
+
+
+CREATE TABLE synkrino.column_profiling (
+	profiling_id INTEGER, 
+	test_execution_id INTEGER, 
+	catalog_name VARCHAR(50), 
+	schema_name VARCHAR(50), 
+	table_name VARCHAR(50), 
+	column_name VARCHAR(50), 
+	totalcount INTEGER, 
+	meanvalue REAL, 
+	minvalue VARCHAR(50), 
+	maxvalue VARCHAR(50), 
+	sumvalue REAL, 
+	lowermedianvalue VARCHAR(50), 
+	uppermedianvalue VARCHAR(50), 
+	nullcount INTEGER, 
+	notnullcount INTEGER, 
+	maxdate DATE, 
+	mindate DATE, 
+	maxlength INTEGER, 
+	minlength INTEGER, 
+	distinctcount INTEGER, 
+	last_update_date TIMESTAMP(6) WITHOUT TIME ZONE
+)
+
+/*
+3 rows from column_profiling table:
+profiling_id	test_execution_id	catalog_name	schema_name	table_name	column_name	totalcount	meanvalue	minvalue	maxvalue	sumvalue	lowermedianvalue	uppermedianvalue	nullcount	notnullcount	maxdate	mindate	maxlength	minlength	distinctcount	last_update_date
+1	183	synkrinotargetdb	humanresources	employee	businessentityid	290	145.5	1	290	42195.0	73	218	0	290	None	None	None	None	290	2024-05-14 13:12:21.088483
+2	183	synkrinotargetdb	humanresources	employee	nationalidnumber	290	None	1.07081e+07	9.994406e+08	None	3.3483427e+08	7.201901e+06	0	290	None	None	9	5	290	2024-05-14 13:12:21.088483
+3	183	synkrinotargetdb	humanresources	employee	loginid	290	None	None	None	None	None	None	0	290	None	None	28	19	290	2024-05-14 13:12:21.088483
+*/
+
+
+CREATE TABLE synkrino.column_profiling_trail (
+	profiling_id INTEGER, 
+	test_execution_id INTEGER, 
+	catalog_name VARCHAR(50), 
+	schema_name VARCHAR(50), 
+	table_name VARCHAR(50), 
+	column_name VARCHAR(50), 
+	totalcount INTEGER, 
+	meanvalue REAL, 
+	minvalue INTEGER, 
+	maxvalue INTEGER, 
+	sumvalue REAL, 
+	lowermedianvalue VARCHAR(50), 
+	uppermedianvalue VARCHAR(50), 
+	nullcount INTEGER, 
+	notnullcount INTEGER, 
+	maxdate DATE, 
+	mindate DATE, 
+	maxlength INTEGER, 
+	minlength INTEGER, 
+	distinctcount INTEGER, 
+	last_update_date TIMESTAMP(6) WITHOUT TIME ZONE
+)
+
+/*
+3 rows from column_profiling_trail table:
+profiling_id	test_execution_id	catalog_name	schema_name	table_name	column_name	totalcount	meanvalue	minvalue	maxvalue	sumvalue	lowermedianvalue	uppermedianvalue	nullcount	notnullcount	maxdate	mindate	maxlength	minlength	distinctcount	last_update_date
+
+*/
+
+
+CREATE TABLE synkrino.column_profiling_validation (
+	test_execution_id INTEGER, 
+	validation_id INTEGER, 
+	mapping_id INTEGER, 
+	source_database_name VARCHAR, 
+	source_schema_name VARCHAR, 
+	source_table_name VARCHAR, 
+	source_column_name VARCHAR, 
+	target_database_name VARCHAR, 
+	target_schema_name VARCHAR, 
+	target_table_name VARCHAR, 
+	target_column_name VARCHAR, 
+	validation_type VARCHAR, 
+	validation_status VARCHAR, 
+	validation_details VARCHAR, 
+	profile_type VARCHAR, 
+	last_update_date DATE
+)
+
+/*
+3 rows from column_profiling_validation table:
+test_execution_id	validation_id	mapping_id	source_database_name	source_schema_name	source_table_name	source_column_name	target_database_name	target_schema_name	target_table_name	target_column_name	validation_type	validation_status	validation_details	profile_type	last_update_date
+70	1	1004	synkrinosourcedb	humanresources	employee	jobtitle	synkrinotargetdb	humanresources	employee	jobtitle	column_value_count	Pass	Pass	nonnumeric_profile	2024-01-02
+70	2	1006	synkrinosourcedb	humanresources	employee	maritalstatus	synkrinotargetdb	humanresources	employee	maritalstatus	column_value_count	Pass	Pass	nonnumeric_profile	2024-01-02
+70	3	1007	synkrinosourcedb	humanresources	employee	gender	synkrinotargetdb	humanresources	employee	gender	column_value_count	Fail	Source is high	nonnumeric_profile	2024-01-02
+*/
+
+
+CREATE TABLE synkrino.config_data_table (
+	id SERIAL NOT NULL, 
+	group_id INTEGER, 
+	template_name VARCHAR(200), 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT config_data_table_pkey PRIMARY KEY (id), 
+	CONSTRAINT config_data_table_group_id_fkey FOREIGN KEY(group_id) REFERENCES synkrino.groups (id)
+)
+
+/*
+3 rows from config_data_table table:
+id	group_id	template_name	is_enabled	created_at	updated_at
+1	1	jsons01	True	2023-10-26 07:48:53.058687+00:00	None
+2	1	eway	True	2023-10-30 09:11:49.406928+00:00	None
+3	2	json104	True	2023-11-09 06:32:33.164381+00:00	None
+*/
+
+
+CREATE TABLE synkrino.config_datacolumn_mapping (
+	config_id INTEGER, 
+	file_id INTEGER, 
+	file_name VARCHAR(255), 
+	file_path VARCHAR(1024), 
+	created_by VARCHAR(255), 
+	updated_by VARCHAR(255), 
+	status VARCHAR(50)
+)
+
+/*
+3 rows from config_datacolumn_mapping table:
+config_id	file_id	file_name	file_path	created_by	updated_by	status
+
+*/
+
+
+CREATE TABLE synkrino.config_files (
+	id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	run_id INTEGER, 
+	file_type INTEGER, 
+	file_path VARCHAR(200), 
+	file_name VARCHAR(200), 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT config_files_pkey PRIMARY KEY (id), 
+	CONSTRAINT config_files_config_id_fkey FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id)
+)
+
+/*
+3 rows from config_files table:
+id	config_id	run_id	file_type	file_path	file_name	is_enabled	created_at	updated_at
+625	1	69667	3	static//validation	0f616b8f-d593-47bb-92ba-f0ee5737f9db.json	False	2024-03-07 04:36:30.697511+00:00	2024-05-17 06:33:03.105036+00:00
+672	1	73239	3	static//validation	2b106e36-7bed-4438-9600-53e0c70b371c.json	False	2024-03-20 05:43:44.676144+00:00	2024-05-17 06:33:03.105036+00:00
+674	1	73273	3	static//validation	a2341e79-2ee6-47fd-9403-c3f32f4c7d6f.json	False	2024-03-22 13:44:25.715375+00:00	2024-05-17 06:33:03.105036+00:00
+*/
+
+
+CREATE TABLE synkrino.config_files_test (
+	id INTEGER DEFAULT nextval('"synkrino".config_files_id_seq'::regclass) NOT NULL, 
+	config_id INTEGER, 
+	version VARCHAR(200) DEFAULT '1.0.0'::character varying, 
+	run_id INTEGER, 
+	file_type INTEGER, 
+	file_path VARCHAR(200), 
+	file_name VARCHAR(200), 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	created_at TIMESTAMP(6) WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP(6) WITH TIME ZONE
+)
+
+/*
+3 rows from config_files_test table:
+id	config_id	version	run_id	file_type	file_path	file_name	is_enabled	created_at	updated_at
+1029	1	1.0.3	22	3	static//validation	module1_json.json	False	2024-05-03 11:31:29.746383+00:00	2024-08-23 09:26:16.481225+00:00
+1033	1	1.0.3	143	3	static//validation	Json01new2.json	False	2024-05-03 11:58:22.013244+00:00	2024-08-23 09:26:16.481225+00:00
+1030	1	1.0.4	223	3	static//validation	module1_json.json	False	2024-05-03 11:31:33.596498+00:00	2024-08-23 09:26:16.481225+00:00
+*/
+
+
+CREATE TABLE synkrino.config_senario_v2 (
+	id SERIAL NOT NULL, 
+	file_id INTEGER NOT NULL, 
+	version VARCHAR(200), 
+	validationlevel VARCHAR(200), 
+	operation_id VARCHAR(200), 
+	label VARCHAR(200), 
+	CONSTRAINT config_senario_v2_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from config_senario_v2 table:
+id	file_id	version	validationlevel	operation_id	label
+1	5	1.0.0	objectLevel	73521	Connection configuration for Synkrino source db
+2	5	1.0.0	objectLevel	73521	Connection configuration for Synkrino target db
+3	5	1.0.0	metadataLevel	73521	Connection configuration for Synkrino source db
+*/
+
+
+CREATE TABLE synkrino.config_table_data_health (
+	pipeline_id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	file_type INTEGER, 
+	file_name VARCHAR(200), 
+	pipeline_name VARCHAR(200), 
+	pipeline_version VARCHAR(200), 
+	portfolio_id INTEGER, 
+	project_id INTEGER, 
+	file_path VARCHAR(200), 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	status VARCHAR(200), 
+	label VARCHAR(500), 
+	CONSTRAINT config_table_data_health_pkey PRIMARY KEY (pipeline_id), 
+	CONSTRAINT config_table_data_health_config_id_fkey FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id)
+)
+
+/*
+3 rows from config_table_data_health table:
+pipeline_id	config_id	file_type	file_name	pipeline_name	pipeline_version	portfolio_id	project_id	file_path	is_enabled	created_at	updated_at	status	label
+
+*/
+
+
+CREATE TABLE synkrino.custom_validation (
+	id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	execution_id INTEGER, 
+	validation_type INTEGER, 
+	validation_status INTEGER, 
+	operation_id VARCHAR(50), 
+	message VARCHAR(200), 
+	source_query VARCHAR(500), 
+	target_query VARCHAR(500), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT custom_validation_pkey1 PRIMARY KEY (id), 
+	CONSTRAINT custom_validation_config_id_fkey1 FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id), 
+	CONSTRAINT custom_validation_execution_id_fkey1 FOREIGN KEY(execution_id) REFERENCES synkrino.execution_result_v2 (execution_id)
+)
+
+/*
+3 rows from custom_validation table:
+id	config_id	execution_id	validation_type	validation_status	operation_id	message	source_query	target_query	created_at	updated_at
+
+*/
+
+
+CREATE TABLE synkrino.custom_validation_result_difference_v2 (
+	id SERIAL NOT NULL, 
+	custom_validation_id INTEGER, 
+	file_type INTEGER, 
+	file_path VARCHAR(200), 
+	file_name VARCHAR(200), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT custom_validation_result_files_pkey1 PRIMARY KEY (id), 
+	CONSTRAINT custom_validation_result_files_custom_validation_id_fkey1 FOREIGN KEY(custom_validation_id) REFERENCES synkrino.custom_validation_result_v2 (id)
+)
+
+/*
+3 rows from custom_validation_result_difference_v2 table:
+id	custom_validation_id	file_type	file_path	file_name	created_at	updated_at
+362	6917	4	/home/ustpresto/synkrino_frontend//static//dataframe\Validation Result - rowLevel - 6917.xlsx	/home/ustpresto/synkrino_frontend//static//dataframe\Validation Result - rowLevel - 6917.xlsx	2024-11-11 14:50:15.929077+00:00	None
+363	6948	4	/home/ustpresto/synkrino_frontend//static//dataframe\Validation Result - metadataValidation - 6948.x	/home/ustpresto/synkrino_frontend//static//dataframe\Validation Result - metadataValidation - 6948.x	2024-11-11 15:23:10.736477+00:00	None
+364	6949	4	/home/ustpresto/synkrino_frontend//static//dataframe\Validation Result - tableLevel - 6949.xlsx	/home/ustpresto/synkrino_frontend//static//dataframe\Validation Result - tableLevel - 6949.xlsx	2024-11-11 15:23:42.186565+00:00	None
+*/
+
+
+CREATE TABLE synkrino.custom_validation_result_files (
+	id SERIAL NOT NULL, 
+	custom_validation_id INTEGER, 
+	file_type INTEGER, 
+	file_path VARCHAR(200), 
+	file_name VARCHAR(200), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT custom_validation_result_files_pkey PRIMARY KEY (id), 
+	CONSTRAINT custom_validation_result_files_custom_validation_id_fkey FOREIGN KEY(custom_validation_id) REFERENCES synkrino.custom_validation_result_v2 (id)
+)
+
+/*
+3 rows from custom_validation_result_files table:
+id	custom_validation_id	file_type	file_path	file_name	created_at	updated_at
+
+*/
+
+
+CREATE TABLE synkrino.custom_validation_result_v2 (
+	id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	execution_id INTEGER, 
+	validation_type VARCHAR(200), 
+	validation_status VARCHAR(200), 
+	operation_id VARCHAR(50), 
+	message VARCHAR(200), 
+	source_query VARCHAR(1000), 
+	target_query VARCHAR(1000), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	file_id INTEGER, 
+	CONSTRAINT custom_validation_pkey PRIMARY KEY (id), 
+	CONSTRAINT custom_validation_config_id_fkey FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id), 
+	CONSTRAINT custom_validation_execution_id_fkey FOREIGN KEY(execution_id) REFERENCES synkrino.execution_result_v2 (execution_id)
+)
+
+/*
+3 rows from custom_validation_result_v2 table:
+id	config_id	execution_id	validation_type	validation_status	operation_id	message	source_query	target_query	created_at	updated_at	file_id
+11661	1	3737	Metadata Validation	Started	S2TM0001	None	None	None	2025-01-23 12:12:52.263580+00:00	None	326
+7568	1	2631	Custom Query	Failed	S2TQ0001		select productid,COUNT(*) as agg_COUNT,  SUM(unitpricediscount) as agg_SUM_unitpricediscount, MIN(un	select productid,COUNT(*) as agg_COUNT,  SUM(unitpricediscount) as agg_SUM_unitpricediscount, MIN(un	2024-11-19 06:40:48.604009+00:00	2024-11-19 06:40:54.122365+00:00	54
+7739	1	2685	Object Level	Failed	73521		SELECT table_schem as Table_Schema,table_name as Table_Name,column_name as Column_Name FROM system.j	SELECT table_schem as Table_Schema,table_name as Table_Name,column_name as Column_Name FROM system.j	2024-11-21 07:49:35.837279+00:00	2024-11-21 07:50:05.254394+00:00	60
+*/
+
+
+CREATE TABLE synkrino.custom_validation_v2 (
+	id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	execution_id INTEGER, 
+	validation_type VARCHAR(200), 
+	validation_status VARCHAR(200), 
+	operation_id VARCHAR(50), 
+	message VARCHAR(200), 
+	source_query VARCHAR(500), 
+	target_query VARCHAR(500), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	file_id INTEGER, 
+	CONSTRAINT custom_validation_v2_pkey PRIMARY KEY (id), 
+	CONSTRAINT custom_validation_config_id_fkey FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id), 
+	CONSTRAINT custom_validation_execution_id_fkey FOREIGN KEY(execution_id) REFERENCES synkrino.execution_result_v2 (execution_id)
+)
+
+/*
+3 rows from custom_validation_v2 table:
+id	config_id	execution_id	validation_type	validation_status	operation_id	message	source_query	target_query	created_at	updated_at	file_id
+
+*/
+
+
+CREATE TABLE synkrino.data_profiling_v2 (
+	profiling_id INTEGER, 
+	test_execution_id INTEGER, 
+	catalog_name VARCHAR(50), 
+	schema_name VARCHAR(50), 
+	table_name VARCHAR(50), 
+	column_name VARCHAR(50), 
+	totalcount INTEGER, 
+	meanvalue REAL, 
+	minvalue VARCHAR(50), 
+	maxvalue VARCHAR(50), 
+	sumvalue REAL, 
+	lowermedianvalue VARCHAR(50), 
+	uppermedianvalue VARCHAR(50), 
+	nullcount INTEGER, 
+	notnullcount INTEGER, 
+	maxdate DATE, 
+	mindate DATE, 
+	maxlength INTEGER, 
+	minlength INTEGER, 
+	distinctcount INTEGER, 
+	last_update_date TIMESTAMP(6) WITHOUT TIME ZONE
+)
+
+/*
+3 rows from data_profiling_v2 table:
+profiling_id	test_execution_id	catalog_name	schema_name	table_name	column_name	totalcount	meanvalue	minvalue	maxvalue	sumvalue	lowermedianvalue	uppermedianvalue	nullcount	notnullcount	maxdate	mindate	maxlength	minlength	distinctcount	last_update_date
+1	45	synkrinosourcedb	humanresources	shift	shiftid	3	2.0	1	3	6.0	1.0	3.0	0	3	None	None	None	None	3	2024-08-12 20:02:48.712908
+2	45	synkrinosourcedb	humanresources	shift	starttime	None	None	None	None	None	None	None	0	3	1970-01-01	1970-01-01	None	None	3	2024-08-12 20:02:48.712908
+3	45	synkrinosourcedb	humanresources	shift	endtime	None	None	None	None	None	None	None	0	3	1970-01-01	1970-01-01	None	None	3	2024-08-12 20:02:48.712908
+*/
+
+
+CREATE TABLE synkrino.database_connection_details_v2 (
+	config_id INTEGER, 
+	database_type VARCHAR(50), 
+	database_name VARCHAR(100), 
+	connected_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+)
+
+/*
+3 rows from database_connection_details_v2 table:
+config_id	database_type	database_name	connected_date
+1	SQL Server	mssql	2024-07-29 10:17:33.343049
+1	MySQL	mysql	2024-07-29 10:17:33.343049
+2	PostgreSQL	postgresmigration	2024-07-29 10:17:33.343049
+*/
+
+
+CREATE TABLE synkrino.date_column_profiling (
+	profiling_id INTEGER NOT NULL, 
+	test_execution_id INTEGER, 
+	catalog_name TEXT, 
+	schema_name TEXT, 
+	table_name TEXT, 
+	column_name TEXT, 
+	"Date_Range_Num" INTEGER, 
+	"Range_start_Date" TIMESTAMP WITHOUT TIME ZONE, 
+	"Range_end_Date" TIMESTAMP WITHOUT TIME ZONE, 
+	"Date_range_count" INTEGER, 
+	last_update_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
+)
+
+/*
+3 rows from date_column_profiling table:
+profiling_id	test_execution_id	catalog_name	schema_name	table_name	column_name	Date_Range_Num	Range_start_Date	Range_end_Date	Date_range_count	last_update_date
+5520	70	synkrinosourcedb	production	product	sellstartdate	1	2008-04-30 00:00:00	2009-05-06 00:00:00	211	2023-11-09 17:39:17.015485
+5521	70	synkrinosourcedb	production	product	sellstartdate	2	2009-05-07 00:00:00	2010-05-12 00:00:00	0	2023-11-09 17:39:17.015485
+5522	70	synkrinosourcedb	production	product	sellstartdate	3	2010-05-13 00:00:00	2011-05-18 00:00:00	0	2023-11-09 17:39:17.015485
+*/
+
+
+CREATE TABLE synkrino.detail_nonnumeric_dist_profile (
+	profiling_id INTEGER NOT NULL, 
+	test_execution_id INTEGER, 
+	catalog_name TEXT, 
+	schema_name TEXT, 
+	table_name TEXT, 
+	column_name TEXT, 
+	column_value TEXT, 
+	column_value_count BIGINT, 
+	last_update_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
+)
+
+/*
+3 rows from detail_nonnumeric_dist_profile table:
+profiling_id	test_execution_id	catalog_name	schema_name	table_name	column_name	column_value	column_value_count	last_update_date
+31713	499	synkrinosourcedb	humanresources	employee	jobtitle	Production Technician - WC60	26	2023-11-21 12:49:04.620358
+31714	499	synkrinosourcedb	humanresources	employee	jobtitle	Production Technician - WC40	26	2023-11-21 12:49:04.620358
+31715	499	synkrinosourcedb	humanresources	employee	maritalstatus	M	146	2023-11-21 12:49:04.620358
+*/
+
+
+CREATE TABLE synkrino.employee (
+	"ID" INTEGER NOT NULL, 
+	CONSTRAINT employee_pkey PRIMARY KEY ("ID")
+)
+
+/*
+3 rows from employee table:
+ID
+1
+*/
+
+
+CREATE TABLE synkrino.encrypt_text (
+	plaintext VARCHAR(255), 
+	encrypt_text VARCHAR(255), 
+	decrypt_text VARCHAR(255), 
+	hash VARCHAR(255)
+)
+
+/*
+3 rows from encrypt_text table:
+plaintext	encrypt_text	decrypt_text	hash
+AES Ecrypted text	Vq01oBtN9BrU3Pk3ym65khQziwabGLnx9x2K4RH+w/wWn4lVg689oPqRBceV7Ho0	AES Ecrypted text	4ce471cbb9cc76d4585d85d12ae1d52d123dbdefefcb7e354b1f05e1516a7412
+*/
+
+
+CREATE TABLE synkrino.encrypt_text_table (
+	plaintext VARCHAR(500), 
+	encrypt_text VARCHAR(1000), 
+	decrypt_text VARCHAR(1000), 
+	hash VARCHAR(1000)
+)
+
+/*
+3 rows from encrypt_text_table table:
+plaintext	encrypt_text	decrypt_text	hash
+AES Encryptedtext	onoyfzJfaNEWKUraVH9YGRdDD2N2rh5HpkY0bqg78CHxuGAKXTwStni6Ew65fnSo	AES Encryptedtext	409de9a415ea46d1adfc8a768bdfb218db94c3ec46812e8b6f6bac6a0e895484
+RSA Encryptedtext	ppMjLjfH3sNFKFjFcgl3RXBUVEowGoO2hVaK6fqe7yjY/ezIFUi+STJ8ZUPufmHPdd6K3C+BDWZb2kyA58feQVrGiBtOcCv5fFK4	RSA Encryptedtext	d02c192337ebd8517424810e47a0f0274fced1996c7c0710b8fbe630f1c956ee
+*/
+
+
+CREATE TABLE synkrino.execution (
+	id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	run_id INTEGER, 
+	execution_type INTEGER, 
+	execution_status INTEGER, 
+	message VARCHAR(200), 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	created_by INTEGER, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT execution_pkey1 PRIMARY KEY (id), 
+	CONSTRAINT execution_config_id_fkey1 FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id), 
+	CONSTRAINT execution_created_by_fkey1 FOREIGN KEY(created_by) REFERENCES synkrino.users (id)
+)
+
+/*
+3 rows from execution table:
+id	config_id	run_id	execution_type	execution_status	message	is_enabled	created_by	created_at	updated_at
+1	2	None	2	2	None	False	1	2024-11-06 15:51:38.252313+00:00	2024-11-18 11:46:08.118752+00:00
+2	2	None	2	2	None	False	1	2024-11-06 16:12:47.802385+00:00	2024-11-18 11:46:08.118752+00:00
+3	2	None	2	1	None	False	1	2024-11-18 10:49:39.148195+00:00	2024-11-18 11:46:08.118752+00:00
+*/
+
+
+CREATE TABLE synkrino.execution_datahealthstatistics_result_v3 (
+	execution_id INTEGER, 
+	json_id INTEGER, 
+	portfolio_id INTEGER, 
+	project_id INTEGER, 
+	catalog_name VARCHAR(255), 
+	schema_name VARCHAR(255), 
+	table_name VARCHAR(255), 
+	operation_type VARCHAR(255), 
+	operations VARCHAR(255), 
+	column_name VARCHAR(255), 
+	column_value NUMERIC(18, 6), 
+	groupby_name VARCHAR(255), 
+	groupby_value VARCHAR(255), 
+	filter_clause VARCHAR(255), 
+	execution_date DATE, 
+	execution_datetime TIMESTAMP(6) WITHOUT TIME ZONE, 
+	execution_starttime TIME WITHOUT TIME ZONE, 
+	execution_endtime TIME WITHOUT TIME ZONE, 
+	execution_elapsed_time VARCHAR(255)
+)
+
+/*
+3 rows from execution_datahealthstatistics_result_v3 table:
+execution_id	json_id	portfolio_id	project_id	catalog_name	schema_name	table_name	operation_type	operations	column_name	column_value	groupby_name	groupby_value	filter_clause	execution_date	execution_datetime	execution_starttime	execution_endtime	execution_elapsed_time
+1001	101	100	100000	synkrinosourcedb	humanresources	employee	tableLevel	count_check_result	ALL	290.000000	None	None	None	2025-04-23	2025-04-23 19:40:25.052039	19:40:04.750390	19:40:16.831511	0:00:12.081121
+1002	101	100	100000	synkrinosourcedb	humanresources	employee	tableLevel	attribute_check_result	ALL	14.000000	None	None	None	2025-04-23	2025-04-23 19:40:25.052039	19:40:04.750390	19:40:16.831511	0:00:12.081121
+1003	101	100	100000	synkrinosourcedb	humanresources	employee	columnLevel	uniqueCheck	loginid	1.000000	organizationlevel	None		2025-04-23	2025-04-23 19:40:25.052039	19:40:04.750390	19:40:16.831511	0:00:12.081121
+*/
+
+
+CREATE TABLE synkrino.execution_history_analytics_v3 (
+	id SERIAL NOT NULL, 
+	execution_id VARCHAR(200) NOT NULL, 
+	config_id INTEGER NOT NULL, 
+	portfolio_id INTEGER NOT NULL, 
+	project_id INTEGER NOT NULL, 
+	table_id INTEGER NOT NULL, 
+	table_version VARCHAR(200), 
+	start_time TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
+	end_time TIMESTAMP WITHOUT TIME ZONE, 
+	status VARCHAR(200) NOT NULL, 
+	error_message VARCHAR(1000), 
+	execution_by VARCHAR(200), 
+	execution_details JSONB, 
+	CONSTRAINT execution_history_analytics_v3_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from execution_history_analytics_v3 table:
+id	execution_id	config_id	portfolio_id	project_id	table_id	table_version	start_time	end_time	status	error_message	execution_by	execution_details
+1	EXEC-1748499877	4	104	104000	4	None	2025-05-29 11:54:37.120685	None	in_progress	None	1	None
+*/
+
+
+CREATE TABLE synkrino.execution_logs_v2 (
+	id SERIAL NOT NULL, 
+	execution_id VARCHAR, 
+	operation_id VARCHAR, 
+	validation_type VARCHAR, 
+	source_query VARCHAR, 
+	target_query VARCHAR, 
+	start_time TIMESTAMP WITHOUT TIME ZONE, 
+	end_time TIMESTAMP WITHOUT TIME ZONE, 
+	status VARCHAR, 
+	log_steps VARCHAR, 
+	CONSTRAINT execution_logs_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from execution_logs_v2 table:
+id	execution_id	operation_id	validation_type	source_query	target_query	start_time	end_time	status	log_steps
+617	2347	123	metadataValidation	SELECT table_cat as catalog_name_source, table_schem as Table_Schema,table_name as Table_Name,column	SELECT table_cat as catalog_name_target, table_schem as Table_Schema,table_name as Table_Name,column	2024-11-11 04:56:48.191567	2024-11-11 04:57:14.687980	success	Step 1 : Started metadataValidation validation with operation_id: 123;
+Step 2 : fetching metadataVal
+618	2348	123	metadataValidation	SELECT table_cat as catalog_name_source, table_schem as Table_Schema,table_name as Table_Name,column	SELECT table_cat as catalog_name_target, table_schem as Table_Schema,table_name as Table_Name,column	2024-11-11 04:58:36.645423	2024-11-11 04:58:49.743524	success	Step 1 : Started metadataValidation validation with operation_id: 123;
+Step 2 : fetching metadataVal
+619	2349	123	metadataValidation	SELECT table_cat as catalog_name_source, table_schem as Table_Schema,table_name as Table_Name,column	SELECT table_cat as catalog_name_target, table_schem as Table_Schema,table_name as Table_Name,column	2024-11-11 04:58:51.461134	2024-11-11 04:59:01.181726	success	Step 1 : Started metadataValidation validation with operation_id: 123;
+Step 2 : fetching metadataVal
+*/
+
+
+CREATE TABLE synkrino.execution_logs_v3 (
+	id SERIAL NOT NULL, 
+	execution_id VARCHAR, 
+	operation_id VARCHAR, 
+	operation_type VARCHAR, 
+	target_query TEXT, 
+	start_time TIMESTAMP(6) WITHOUT TIME ZONE, 
+	end_time TIMESTAMP(6) WITHOUT TIME ZONE, 
+	status VARCHAR, 
+	log_steps VARCHAR, 
+	CONSTRAINT execution_logs_v3_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from execution_logs_v3 table:
+id	execution_id	operation_id	operation_type	target_query	start_time	end_time	status	log_steps
+218	1001	TDQV0001	CountCheck	
+        SELECT COUNT(*) AS count_check_result 
+        FROM synkrinosourcedb.humanresources.employe	2025-06-09 16:14:03.784269	2025-06-09 16:14:15.414768	Success	Step 1 : Started CountCheck operation with operation_id: TDQV0001;
+Step 2 : Starting CountCheck;
+Ste
+219	1001	TDQV0002	AttributeCheck	SELECT COUNT(*) as attribute_check_result FROM information_schema.columns WHERE table_name = 'employ	2025-06-09 16:14:25.049084	2025-06-09 16:14:27.910989	Success	Step 1 : Started AttributeCheck operation with operation_id: TDQV0002;
+Step 2 : Starting AttributeCh
+220	1001	TDQV0003	duplicateCheck	SELECT 'businessentityid' AS groupby_name, businessentityid AS groupby_value, COUNT(*) AS column_val	2025-06-09 16:14:38.787236	2025-06-09 16:14:41.328456	Success	Step 1 : Started duplicateCheck operation with operation_id: TDQV0003;
+Step 2 : Starting duplicateCh
+*/
+
+
+CREATE TABLE synkrino.execution_result_v2 (
+	execution_id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	run_id INTEGER, 
+	execution_type INTEGER, 
+	execution_status INTEGER, 
+	message VARCHAR(200), 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	created_by INTEGER, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT execution_pkey PRIMARY KEY (execution_id), 
+	CONSTRAINT execution_config_id_fkey FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id), 
+	CONSTRAINT execution_created_by_fkey FOREIGN KEY(created_by) REFERENCES synkrino.users (id)
+)
+
+/*
+3 rows from execution_result_v2 table:
+execution_id	config_id	run_id	execution_type	execution_status	message	is_enabled	created_by	created_at	updated_at
+4261	2	None	2	3	None	False	1	2025-02-18 09:08:48.564142+00:00	2025-07-24 14:40:40.561533+00:00
+3532	2	None	2	3	None	False	1	2025-01-21 06:27:00.500705+00:00	2025-07-24 14:40:40.561533+00:00
+3531	2	None	2	3	None	False	1	2025-01-21 06:27:00.488138+00:00	2025-07-24 14:40:40.561533+00:00
+*/
+
+
+CREATE TABLE synkrino.execution_results (
+	execution_id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	pipeline_id INTEGER, 
+	execution_type INTEGER, 
+	execution_status INTEGER, 
+	message VARCHAR(200), 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	created_by INTEGER, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT execution_result_v2_pkey PRIMARY KEY (execution_id), 
+	CONSTRAINT execution_result_v2_created_by_fkey FOREIGN KEY(created_by) REFERENCES synkrino.users (id)
+)
+
+/*
+3 rows from execution_results table:
+execution_id	config_id	pipeline_id	execution_type	execution_status	message	is_enabled	created_by	created_at	updated_at
+1824	1	None	2	1	None	False	1	2024-10-30 14:42:22.512472+00:00	2024-11-01 06:50:46.505257+00:00
+1825	1	None	2	1	None	False	1	2024-11-01 06:02:53.665676+00:00	2024-11-01 06:50:46.505257+00:00
+1826	1	None	2	1	None	False	1	2024-11-01 06:04:10.040422+00:00	2024-11-01 06:50:46.505257+00:00
+*/
+
+
+CREATE TABLE synkrino.groups (
+	id SERIAL NOT NULL, 
+	name VARCHAR NOT NULL, 
+	is_enabled BOOLEAN DEFAULT false NOT NULL, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	CONSTRAINT groups_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from groups table:
+id	name	is_enabled	created_at
+1	gp1	True	2023-10-26 07:48:16.963850+00:00
+2	gp2	True	2023-11-09 06:31:33.992310+00:00
+3	gp3	True	2023-11-17 06:37:36.656005+00:00
+*/
+
+
+CREATE TABLE synkrino.mapping_doc_one_test (
+	id SERIAL NOT NULL, 
+	mapping_id INTEGER NOT NULL, 
+	mapping_doc_name VARCHAR NOT NULL, 
+	config_id INTEGER NOT NULL, 
+	target_database VARCHAR NOT NULL, 
+	target_schema VARCHAR NOT NULL, 
+	target_table VARCHAR NOT NULL, 
+	target_column VARCHAR NOT NULL, 
+	target_data_type VARCHAR, 
+	target_data_length INTEGER, 
+	target_data_precision INTEGER, 
+	source_data_type VARCHAR, 
+	source_data_length INTEGER, 
+	source_data_precision INTEGER, 
+	target_primary_key BOOLEAN, 
+	target_nullable BOOLEAN, 
+	target_ordinal_position INTEGER, 
+	source_database VARCHAR NOT NULL, 
+	source_schema VARCHAR NOT NULL, 
+	source_table VARCHAR NOT NULL, 
+	source_column VARCHAR NOT NULL, 
+	source_primary_key BOOLEAN, 
+	source_nullable BOOLEAN, 
+	source_ordinal_position INTEGER, 
+	transformation_logic VARCHAR, 
+	description VARCHAR, 
+	created_date TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_date TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT mapping_doc_one_test_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from mapping_doc_one_test table:
+id	mapping_id	mapping_doc_name	config_id	target_database	target_schema	target_table	target_column	target_data_type	target_data_length	target_data_precision	source_data_type	source_data_length	source_data_precision	target_primary_key	target_nullable	target_ordinal_position	source_database	source_schema	source_table	source_column	source_primary_key	source_nullable	source_ordinal_position	transformation_logic	description	created_date	updated_date
+13	3	four	1	EDWQA	ODS	Deposits	Applid	Varchar(255)	255	0	Varchar(255)	255	0	False	False	1	FCUBSQA	FCSVBODS	Deposits	Applid	False	False	1	Direct Mapping	Mapping Application ID from source to target key.	2025-04-08 06:22:30.834642+00:00	2025-04-08 06:50:12.740625+00:00
+14	3	four	1	EDWQA	ODS	Deposits	Account Number	Varchar(255)	255	0	Varchar(255)	255	0	True	False	2	FCUBSQA	FCSVBODS	Deposits	Account Number	True	False	2	Direct Mapping	Mapping Account Number from source to target key.	2025-04-08 06:22:30.834642+00:00	2025-04-08 06:50:12.740625+00:00
+15	3	four	1	EDWQA	ODS	Deposits	Entity	Varchar(255)	255	0	Varchar(255)	255	0	False	False	3	FCUBSQA	FCSVBODS	Deposits	Entity	False	False	3	Direct Mapping	Mapping Entity from source to target key.	2025-04-08 06:22:30.834642+00:00	2025-04-08 06:50:12.740625+00:00
+*/
+
+
+CREATE TABLE synkrino.mapping_document_detail_v2 (
+	mapping_id INTEGER NOT NULL, 
+	config_id INTEGER, 
+	file_name VARCHAR(255), 
+	mapping_doc_name VARCHAR(255) NOT NULL, 
+	file_type INTEGER, 
+	file_path VARCHAR(255), 
+	mapping_doc_version VARCHAR(200) NOT NULL, 
+	is_enabled BOOLEAN NOT NULL, 
+	created_at TIMESTAMP(6) WITH TIME ZONE, 
+	updated_at TIMESTAMP(6) WITH TIME ZONE, 
+	label VARCHAR(500)
+)
+
+/*
+3 rows from mapping_document_detail_v2 table:
+mapping_id	config_id	file_name	mapping_doc_name	file_type	file_path	mapping_doc_version	is_enabled	created_at	updated_at	label
+327	1	None	UBS_to_ODS_327_v100.xlsx	None	static//mappingdoc	1.0.0	True	2025-01-24 07:30:26.865608+00:00	None	UBS_to_ODS
+327	1	UBS_to_ODS	UBS_to_ODS_327_v100.xlsx	None	static//mappingdoc	1.0.0	True	2025-01-24 07:51:02.102543+00:00	None	UBS_to_ODS
+333	1	SVB Metadata Validation	SVB Metadata Validation_333_v100.xlsx	None	static//mappingdoc	1.0.0	True	2025-01-27 09:41:40.823156+00:00	None	SVB Metadata Validation
+*/
+
+
+CREATE TABLE synkrino.mapping_document_details_v2 (
+	id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	file_name VARCHAR(255), 
+	file_path VARCHAR(255) NOT NULL, 
+	created_at TIMESTAMP(6) WITH TIME ZONE, 
+	updated_at TIMESTAMP(6) WITH TIME ZONE, 
+	label VARCHAR(500), 
+	CONSTRAINT mapping_document_details_v2_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from mapping_document_details_v2 table:
+id	config_id	file_name	file_path	created_at	updated_at	label
+1	1	UBS_to_ODS	static//mappingdoc//UBS_to_ODS_1.xlsx	2025-01-27 09:33:50.042715+00:00	None	Object validation check
+2	1	SVB Metadata	static//mappingdoc//SVB Metadata_2.xlsx	2025-01-27 09:38:10.222528+00:00	None	Metadata validation check
+3	1	ODS_to_EDW	static//mappingdoc//ODS_to_EDW_3.xlsx	2025-01-27 12:57:52.600823+00:00	None	Object validation check
+*/
+
+
+CREATE TABLE synkrino.mapping_document_v2 (
+	id SERIAL NOT NULL, 
+	config_id INTEGER NOT NULL, 
+	pipeline_id INTEGER, 
+	target_database VARCHAR(50), 
+	target_schema VARCHAR(50), 
+	target_table VARCHAR(50), 
+	target_column VARCHAR(50), 
+	target_data_type VARCHAR(50), 
+	target_primary_key VARCHAR(50), 
+	target_nullable VARCHAR(50), 
+	target_ordinal_position INTEGER, 
+	source_database VARCHAR(50), 
+	source_schema VARCHAR(50), 
+	source_table VARCHAR(50), 
+	source_column VARCHAR(50), 
+	source_data_type VARCHAR(50), 
+	source_primary_key VARCHAR(50), 
+	source_nullable VARCHAR(50), 
+	source_ordinal_position INTEGER, 
+	transformation_logic VARCHAR(1000), 
+	description VARCHAR(1000), 
+	created_date DATE, 
+	updated_date DATE, 
+	mapping_id INTEGER, 
+	CONSTRAINT mapping_document_v2_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from mapping_document_v2 table:
+id	config_id	pipeline_id	target_database	target_schema	target_table	target_column	target_data_type	target_primary_key	target_nullable	target_ordinal_position	source_database	source_schema	source_table	source_column	source_data_type	source_primary_key	source_nullable	source_ordinal_position	transformation_logic	description	created_date	updated_date	mapping_id
+2510	1	None	oracle	ods	deposits	applied	Varchar2(10)	No	No	1	oracle	fcsvbods	deposits	applied	Varchar2(10)	No	No	1	Direct Mapping	Mapping Application ID from source to target key.	None	None	3
+2511	1	None	oracle	ods	deposits	account_number	Varchar2(40)	Yes	No	2	oracle	fcsvbods	deposits	account_number	Varchar2(40)	Yes	No	2	Direct Mapping	Mapping Account Number from source to target key.	None	None	3
+2512	1	None	oracle	ods	deposits	entity	Varchar2(5)	No	No	3	oracle	fcsvbods	deposits	entity	Varchar2(5)	No	No	3	CONCAT(entity,' - ', currency) AS Entity_Currency_Concat	Mapping Entity from source to target key.	None	None	3
+*/
+
+
+CREATE TABLE synkrino.metadata_profiling_v2 (
+	test_execution_id INTEGER, 
+	catalog_name VARCHAR, 
+	table_schema VARCHAR, 
+	table_name VARCHAR, 
+	column_name VARCHAR, 
+	datatype VARCHAR, 
+	column_classification VARCHAR, 
+	data_length INTEGER, 
+	data_precision INTEGER, 
+	ordinal_position BIGINT, 
+	comment VARCHAR, 
+	last_update_date DATE
+)
+
+/*
+3 rows from metadata_profiling_v2 table:
+test_execution_id	catalog_name	table_schema	table_name	column_name	datatype	column_classification	data_length	data_precision	ordinal_position	comment	last_update_date
+45	synkrinosourcedb	sales	personcreditcard	businessentityid	integer	Numeric	0	0	1	None	2024-08-16
+45	synkrinosourcedb	sales	personcreditcard	creditcardid	integer	Numeric	0	0	2	None	2024-08-16
+45	synkrinosourcedb	sales	personcreditcard	modifieddate	timestamp	date_type	3	0	3	None	2024-08-16
+*/
+
+
+CREATE TABLE synkrino.metadata_validation (
+	test_execution_id INTEGER, 
+	mapping_id INTEGER, 
+	source_catalog_name VARCHAR, 
+	target_catalog_name VARCHAR, 
+	source_schema_name VARCHAR, 
+	target_schema_name VARCHAR, 
+	source_table_name VARCHAR, 
+	source_column_name VARCHAR, 
+	target_table_name VARCHAR, 
+	target_column_name VARCHAR, 
+	validation_type VARCHAR, 
+	validation_status VARCHAR, 
+	validation_details VARCHAR, 
+	last_update_date DATE
+)
+
+/*
+3 rows from metadata_validation table:
+test_execution_id	mapping_id	source_catalog_name	target_catalog_name	source_schema_name	target_schema_name	source_table_name	source_column_name	target_table_name	target_column_name	validation_type	validation_status	validation_details	last_update_date
+12	1469	synkrinosourcedb	synkrinotargetdb	production	production	product	productnumber	product	productnumber	data_length	Pass	NA	2023-12-05
+12	1486	synkrinosourcedb	synkrinotargetdb	production	production	product	sellenddate	product	sellenddate	data_precesion	Pass	NA	2023-12-05
+12	1473	synkrinosourcedb	synkrinotargetdb	production	production	product	standardcost	product	standardcost	data_precesion	Pass	NA	2023-12-05
+*/
+
+
+CREATE TABLE synkrino.metadatamigration_result (
+	execution_id SERIAL NOT NULL, 
+	source_database VARCHAR(255) NOT NULL, 
+	source_schema VARCHAR(255) NOT NULL, 
+	source_table VARCHAR(255) NOT NULL, 
+	target_database VARCHAR(255) NOT NULL, 
+	target_schema VARCHAR(255) NOT NULL, 
+	target_table VARCHAR(255) NOT NULL, 
+	"user" VARCHAR(255) NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	elapsed_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT metadatamigration_result_pkey PRIMARY KEY (execution_id)
+)
+
+/*
+3 rows from metadatamigration_result table:
+execution_id	source_database	source_schema	source_table	target_database	target_schema	target_table	user	start_time	end_time	elapsed_time
+
+*/
+
+
+CREATE TABLE synkrino.mod_one_custom_validation_result_difference_v1 (
+	id SERIAL NOT NULL, 
+	custom_validation_id INTEGER, 
+	file_type INTEGER, 
+	file_path VARCHAR(200), 
+	file_name VARCHAR(200), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT mod_one_custom_validation_result_difference_v1_pkey PRIMARY KEY (id), 
+	CONSTRAINT mod_one_custom_validation_result_diff_custom_validation_id_fkey FOREIGN KEY(custom_validation_id) REFERENCES synkrino.mod_one_custom_validation_result_v1 (id)
+)
+
+/*
+3 rows from mod_one_custom_validation_result_difference_v1 table:
+id	custom_validation_id	file_type	file_path	file_name	created_at	updated_at
+1	1	4	C:\Users\216517\PycharmProjects\Synkrino//static//alpha_dataframe//Validation Result - Metadata Vali	C:\Users\216517\PycharmProjects\Synkrino//static//alpha_dataframe//Validation Result - Metadata Vali	2025-04-24 07:09:44.833401+00:00	None
+2	2	4	C:\Users\216517\PycharmProjects\Synkrino//static//alpha_dataframe//Validation Result - Metadata Vali	C:\Users\216517\PycharmProjects\Synkrino//static//alpha_dataframe//Validation Result - Metadata Vali	2025-04-24 07:20:05.167834+00:00	None
+3	3	4	C:\Users\216517\PycharmProjects\Synkrino//static//alpha_dataframe//Validation Result - Metadata Vali	C:\Users\216517\PycharmProjects\Synkrino//static//alpha_dataframe//Validation Result - Metadata Vali	2025-04-24 07:24:44.209458+00:00	None
+*/
+
+
+CREATE TABLE synkrino.mod_one_custom_validation_result_v1 (
+	id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	execution_id INTEGER, 
+	validation_type VARCHAR(255), 
+	validation_status VARCHAR(255), 
+	operation_id VARCHAR(50), 
+	message VARCHAR(200), 
+	source_query VARCHAR(1000), 
+	target_query VARCHAR(1000), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT mod_one_custom_validation_result_v1_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from mod_one_custom_validation_result_v1 table:
+id	config_id	execution_id	validation_type	validation_status	operation_id	message	source_query	target_query	created_at	updated_at
+1	1	1	Metadata Validation	Failed	S2TM0001		
+    SELECT table_schem AS Table_Schema, table_name AS Table_Name, column_name AS Column_Name,
+     	
+        SELECT target_schema AS Table_Schema, target_table AS Table_Name, target_column AS Column_N	2025-04-24 07:08:51.543308+00:00	2025-04-24 07:09:37.406240+00:00
+2	1	2	Metadata Validation	Failed	S2TM0001		
+    SELECT table_schem AS Table_Schema, table_name AS Table_Name, column_name AS Column_Name,
+     	
+        SELECT target_schema AS Table_Schema, target_table AS Table_Name, target_column AS Column_N	2025-04-24 07:19:14.747753+00:00	2025-04-24 07:19:58.970835+00:00
+3	1	3	Metadata Validation	Failed	S2TM0001		
+    SELECT table_schem AS Table_Schema, table_name AS Table_Name, column_name AS Column_Name,
+     	
+        SELECT target_schema AS Table_Schema, target_table AS Table_Name, target_column AS Column_N	2025-04-24 07:23:46.143244+00:00	2025-04-24 07:24:36.196477+00:00
+*/
+
+
+CREATE TABLE synkrino.mod_one_execution_logs_v1 (
+	id SERIAL NOT NULL, 
+	execution_id VARCHAR, 
+	operation_id VARCHAR, 
+	validation_type VARCHAR, 
+	source_query VARCHAR, 
+	target_query VARCHAR, 
+	start_time TIMESTAMP WITHOUT TIME ZONE, 
+	end_time TIMESTAMP WITHOUT TIME ZONE, 
+	status VARCHAR, 
+	log_steps VARCHAR, 
+	CONSTRAINT mod_one_execution_logs_v1_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from mod_one_execution_logs_v1 table:
+id	execution_id	operation_id	validation_type	source_query	target_query	start_time	end_time	status	log_steps
+1	1	S2TM0001	Metadata Validation	
+    SELECT table_schem AS Table_Schema, table_name AS Table_Name, column_name AS Column_Name,
+     	
+        SELECT target_schema AS Table_Schema, target_table AS Table_Name, target_column AS Column_N	2025-04-24 12:38:50.707344	2025-04-24 12:39:43.545024	Failed	Step 1 : Started Metadata Validation validation;
+Step 2 : Total Count: 7, Mismatch Count: 7, Match C
+2	2	S2TM0001	Metadata Validation	
+    SELECT table_schem AS Table_Schema, table_name AS Table_Name, column_name AS Column_Name,
+     	
+        SELECT target_schema AS Table_Schema, target_table AS Table_Name, target_column AS Column_N	2025-04-24 12:49:13.914985	2025-04-24 12:50:03.885346	Failed	Step 1 : Started Metadata Validation validation;
+Step 2 : Total Count: 7, Mismatch Count: 7, Match C
+3	3	S2TM0001	Metadata Validation	
+    SELECT table_schem AS Table_Schema, table_name AS Table_Name, column_name AS Column_Name,
+     	
+        SELECT target_schema AS Table_Schema, target_table AS Table_Name, target_column AS Column_N	2025-04-24 12:53:45.788078	2025-04-24 12:54:42.943328	Failed	Step 1 : Started Metadata Validation validation;
+Step 2 : Total Count: 7, Mismatch Count: 3, Match C
+*/
+
+
+CREATE TABLE synkrino.mod_one_execution_result_v1 (
+	execution_id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	execution_type INTEGER, 
+	execution_status INTEGER, 
+	message VARCHAR(1000), 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	created_by INTEGER, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT mod_one_execution_result_v1_pkey PRIMARY KEY (execution_id), 
+	CONSTRAINT mod_one_execution_result_v1_config_id_fkey FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id), 
+	CONSTRAINT mod_one_execution_result_v1_created_by_fkey FOREIGN KEY(created_by) REFERENCES synkrino.users (id)
+)
+
+/*
+3 rows from mod_one_execution_result_v1 table:
+execution_id	config_id	execution_type	execution_status	message	is_enabled	created_by	created_at	updated_at
+215	2	1	4	Validation failed: Cannot save file into a non-existent directory: 'C:\Users\231160\PycharmProjects\	False	1	2025-06-26 08:08:25.769362+00:00	2025-06-26 08:26:57.139086+00:00
+37	2	1	1	Metadata validation execution started	False	1	2025-05-30 11:58:39.564592+00:00	2025-06-26 08:26:57.139086+00:00
+39	2	1	1	Metadata validation execution started	False	1	2025-05-30 12:24:52.515206+00:00	2025-06-26 08:26:57.139086+00:00
+*/
+
+
+CREATE TABLE synkrino.mod_one_mapping_doc_v1 (
+	id SERIAL NOT NULL, 
+	mapping_id INTEGER NOT NULL, 
+	mapping_doc_name VARCHAR NOT NULL, 
+	config_id INTEGER NOT NULL, 
+	target_database VARCHAR NOT NULL, 
+	target_schema VARCHAR NOT NULL, 
+	target_table VARCHAR NOT NULL, 
+	target_column VARCHAR NOT NULL, 
+	target_data_type VARCHAR, 
+	target_data_length INTEGER, 
+	target_data_precision INTEGER, 
+	source_data_type VARCHAR, 
+	source_data_length INTEGER, 
+	source_data_precision INTEGER, 
+	target_primary_key BOOLEAN, 
+	target_nullable BOOLEAN, 
+	target_ordinal_position INTEGER, 
+	source_database VARCHAR NOT NULL, 
+	source_schema VARCHAR NOT NULL, 
+	source_table VARCHAR NOT NULL, 
+	source_column VARCHAR NOT NULL, 
+	source_primary_key BOOLEAN, 
+	source_nullable BOOLEAN, 
+	source_ordinal_position INTEGER, 
+	transformation_logic VARCHAR, 
+	description VARCHAR, 
+	created_date TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_date TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT mod_one_mapping_doc_v1_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from mod_one_mapping_doc_v1 table:
+id	mapping_id	mapping_doc_name	config_id	target_database	target_schema	target_table	target_column	target_data_type	target_data_length	target_data_precision	source_data_type	source_data_length	source_data_precision	target_primary_key	target_nullable	target_ordinal_position	source_database	source_schema	source_table	source_column	source_primary_key	source_nullable	source_ordinal_position	transformation_logic	description	created_date	updated_date
+1	1	metadata validation	1	oracle	ods	deposits	applied	varchar	255	0	varchar	255	0	False	False	1	oracle	ods	deposits	applied	False	False	1	Direct Mapping	Mapping Application ID from source to target key.	2025-04-24 07:06:53.210792+00:00	2025-05-30 11:41:46.488889+00:00
+2	1	metadata validation	1	oracle	ods	deposits	account_number	varchar	255	0	varchar	255	0	True	False	2	oracle	ods	deposits	account_number	True	False	2	Direct Mapping	Mapping Account Number from source to target key.	2025-04-24 07:06:53.210792+00:00	2025-05-30 11:41:46.488889+00:00
+3	1	metadata validation	1	oracle	ods	deposits	entity	varchar	255	0	varchar	255	0	False	False	3	oracle	ods	deposits	entity	False	False	3	Direct Mapping	Mapping Entity from source to target key.	2025-04-24 07:06:53.210792+00:00	2025-05-30 11:41:46.488889+00:00
+*/
+
+
+CREATE TABLE synkrino.object_validation_result_v2 (
+	id INTEGER, 
+	config_id INTEGER, 
+	file_id INTEGER, 
+	execution_id INTEGER, 
+	validation_type VARCHAR(200), 
+	validation_status VARCHAR(200), 
+	operation_id VARCHAR(50), 
+	message VARCHAR(200), 
+	source_query VARCHAR(500), 
+	target_query VARCHAR(500), 
+	created_at TIMESTAMP(6) WITH TIME ZONE, 
+	updated_at TIMESTAMP(6) WITH TIME ZONE
+)
+
+/*
+3 rows from object_validation_result_v2 table:
+id	config_id	file_id	execution_id	validation_type	validation_status	operation_id	message	source_query	target_query	created_at	updated_at
+
+*/
+
+
+CREATE TABLE synkrino.pattern_recognition (
+	test_execution_id INTEGER, 
+	catalog_name CHAR(1), 
+	table_schema CHAR(1), 
+	table_name CHAR(1), 
+	column_name CHAR(1), 
+	datatype CHAR(1), 
+	column_classification VARCHAR, 
+	data_length INTEGER, 
+	data_precision INTEGER, 
+	ordinal_position BIGINT, 
+	pattern VARCHAR
+)
+
+/*
+3 rows from pattern_recognition table:
+test_execution_id	catalog_name	table_schema	table_name	column_name	datatype	column_classification	data_length	data_precision	ordinal_position	pattern
+
+*/
+
+
+CREATE TABLE synkrino.pipeline_details_v2 (
+	pipeline_id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	file_name VARCHAR(255), 
+	pipeline_name VARCHAR(255) NOT NULL, 
+	pipeline_version VARCHAR(200) NOT NULL, 
+	portfolio_id INTEGER, 
+	project_id INTEGER, 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	file_type INTEGER, 
+	file_path VARCHAR(255), 
+	status VARCHAR(50), 
+	created_at TIMESTAMP(6) WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP(6) WITH TIME ZONE, 
+	label VARCHAR(500), 
+	CONSTRAINT pipeline_details_v2_pkey PRIMARY KEY (pipeline_id, pipeline_version)
+)
+
+/*
+3 rows from pipeline_details_v2 table:
+pipeline_id	config_id	file_name	pipeline_name	pipeline_version	portfolio_id	project_id	is_enabled	file_type	file_path	status	created_at	updated_at	label
+18	7	Synkrino Demo_p111_pr111000_v100.json	Synkrino Demo	1.0.0	111	111000	False	3	static//validation	3	2024-11-13 09:28:47.235794+00:00	2024-11-26 09:32:44.740521+00:00	None
+24	7	pipeline add_p109_pr109000_v100.json	Synkrino_Datavalidation	1.0.0	109	109000	False	3	static//validation	3	2024-11-19 13:16:58.437628+00:00	2024-11-25 09:10:16.083543+00:00	Synkrino_Datavalidation
+436	7	VAPT Pipeline_p205_pr205000_v105.json	VAPT Pipeline	1.0.5	205	205000	False	3	static//validation	3	2025-04-08 06:32:15.494609+00:00	2025-06-09 12:31:19.067757+00:00	Label for VAPT pipeline
+*/
+
+
+CREATE TABLE synkrino.pipeline_details_v2_test (
+	file_id SERIAL NOT NULL, 
+	pipeline_name VARCHAR(255) NOT NULL, 
+	file_name VARCHAR(255), 
+	config_id INTEGER, 
+	version VARCHAR(200) NOT NULL, 
+	is_enabled BOOLEAN DEFAULT true NOT NULL, 
+	portfolio_id INTEGER, 
+	project_id INTEGER, 
+	file_type INTEGER, 
+	file_path VARCHAR(255), 
+	status VARCHAR(50), 
+	created_at TIMESTAMP(6) WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP(6) WITH TIME ZONE, 
+	label VARCHAR(500), 
+	CONSTRAINT pipeline_details_v2_test_pkey PRIMARY KEY (file_id, version)
+)
+
+/*
+3 rows from pipeline_details_v2_test table:
+file_id	pipeline_name	file_name	config_id	version	is_enabled	portfolio_id	project_id	file_type	file_path	status	created_at	updated_at	label
+7	pipeline-10	pipeline-10_p101_pr10100_v102.json	1	1.0.2	False	101	10100	3	static//validation	3	2024-10-23 07:41:35.847370+00:00	2024-10-23 07:42:01.252382+00:00	pipeline-10
+2	Synkrino	synkrino_1_p100_pr100001_v101.json	1	1.0.1	False	100	100001	3	static//validation	2	2024-10-22 06:32:07.494409+00:00	2024-10-22 06:33:34.952646+00:00	Synkrino_label
+2	Synkrino	synkrino_1_p100_pr100001_v100.json	1	1.0.0	True	100	100001	3	static//validation	2	2024-10-22 06:32:07.494409+00:00	2024-10-22 06:33:34.234705+00:00	Synkrino_label
+*/
+
+
+CREATE TABLE synkrino.portfolio_details_analysis_v3 (
+	config_id INTEGER, 
+	portfolio_id INTEGER, 
+	portfolio_name VARCHAR(255), 
+	label VARCHAR(255), 
+	created_date TIMESTAMP(6) WITH TIME ZONE, 
+	updated_date TIMESTAMP(6) WITH TIME ZONE, 
+	status VARCHAR(50)
+)
+
+/*
+3 rows from portfolio_details_analysis_v3 table:
+config_id	portfolio_id	portfolio_name	label	created_date	updated_date	status
+2	100	new_portfolio	new_portfolio_label	2025-03-28 07:18:07.011880+00:00	2025-03-28 07:18:07.011880+00:00	1
+2	101	new_portfolio_demo_update	new_portfolio_demo_update_labe	2025-03-28 10:09:50.496706+00:00	2025-03-28 10:11:49.839742+00:00	2
+1	102	VAPT	VAPT Testing	2025-04-03 06:05:58.273141+00:00	2025-04-03 06:05:58.273145+00:00	1
+*/
+
+
+CREATE TABLE synkrino.portfolio_details_v2 (
+	config_id INTEGER NOT NULL, 
+	portfolio_id INTEGER NOT NULL, 
+	portfolio_name VARCHAR(255) NOT NULL, 
+	label VARCHAR(255) NOT NULL, 
+	created_date TIMESTAMP(6) WITH TIME ZONE DEFAULT now(), 
+	updated_date TIMESTAMP(6) WITH TIME ZONE, 
+	status VARCHAR(50) NOT NULL, 
+	CONSTRAINT portfolio_details_v2_pkey PRIMARY KEY (portfolio_id)
+)
+
+/*
+3 rows from portfolio_details_v2 table:
+config_id	portfolio_id	portfolio_name	label	created_date	updated_date	status
+1	116	Synkrino_18_Testing_portfolio	Synkrino_18_Testing_portfolio_label	2024-11-18 06:53:56.803909+00:00	2024-11-18 06:53:56.803916+00:00	3
+1	117	vm_deleteapi_117	 label for vm_deleteapi_117	2024-11-18 07:00:12.350011+00:00	2024-11-18 07:00:12.350020+00:00	3
+1	118	vm_deleteapi_118	 label for vm_deleteapi_118	2024-11-18 07:04:23.598334+00:00	2024-11-18 07:04:23.598339+00:00	3
+*/
+
+
+CREATE TABLE synkrino.portfolios (
+	id SERIAL NOT NULL, 
+	name VARCHAR(100), 
+	status INTEGER, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT portfolios_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from portfolios table:
+id	name	status	created_at	updated_at
+
+*/
+
+
+CREATE TABLE synkrino.project_details_analysis_v3 (
+	config_id INTEGER, 
+	portfolio_id INTEGER, 
+	project_id INTEGER, 
+	project_name VARCHAR(255), 
+	label VARCHAR(100), 
+	created_date TIMESTAMP(6) WITH TIME ZONE, 
+	updated_date TIMESTAMP(6) WITH TIME ZONE, 
+	status VARCHAR(50), 
+	tables VARCHAR(255)
+)
+
+/*
+3 rows from project_details_analysis_v3 table:
+config_id	portfolio_id	project_id	project_name	label	created_date	updated_date	status	tables
+22	130	130000	demoproject	demolabel	2025-07-28 05:59:21.922887+00:00	2025-07-28 05:59:21.922887+00:00	1	demo
+12	112	112000	test_project	test_project_label	2025-06-19 06:53:04.180283+00:00	2025-06-19 07:08:45.969695+00:00	2	employees,employees
+2	101	101000	new_project_demo_update	new_project_demo_update_lebel	2025-03-28 10:10:32.480909+00:00	2025-03-28 10:13:32.531655+00:00	2	emplokyee_table
+*/
+
+
+CREATE TABLE synkrino.project_details_v2 (
+	config_id INTEGER NOT NULL, 
+	portfolio_id INTEGER NOT NULL, 
+	project_id INTEGER NOT NULL, 
+	project_name VARCHAR(255) NOT NULL, 
+	label VARCHAR(100), 
+	created_date TIMESTAMP(6) WITH TIME ZONE DEFAULT now(), 
+	updated_date TIMESTAMP(6) WITH TIME ZONE, 
+	status VARCHAR(50), 
+	CONSTRAINT project_id_pkey PRIMARY KEY (project_id)
+)
+
+/*
+3 rows from project_details_v2 table:
+config_id	portfolio_id	project_id	project_name	label	created_date	updated_date	status
+7	100	100000	project_testing	project_testing	2024-11-11 14:47:56.922579+00:00	None	1
+1	102	102000	Project_Test1	Label for Project_Test1	2024-11-11 17:26:09.297059+00:00	None	1
+7	100	100003	Nerw_added_project1900	Nerw_added_project1900	2024-11-12 03:07:46.378346+00:00	2024-11-12 03:07:46.378358+00:00	3
+*/
+
+
+CREATE TABLE synkrino.projects (
+	id SERIAL NOT NULL, 
+	portfolio_id INTEGER, 
+	name VARCHAR(100), 
+	status INTEGER, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	updated_at TIMESTAMP WITH TIME ZONE, 
+	CONSTRAINT projects_pkey PRIMARY KEY (id), 
+	CONSTRAINT projects_portfolio_id_fkey FOREIGN KEY(portfolio_id) REFERENCES synkrino.portfolios (id)
+)
+
+/*
+3 rows from projects table:
+id	portfolio_id	name	status	created_at	updated_at
+
+*/
+
+
+CREATE TABLE synkrino.salesorderdetail (
+	salesorderid INTEGER, 
+	salesorderdetailid INTEGER, 
+	carriertrackingnumber VARCHAR(25), 
+	orderqty SMALLINT, 
+	productid INTEGER, 
+	specialofferid INTEGER, 
+	unitprice NUMERIC(19, 4), 
+	unitpricediscount NUMERIC(19, 4), 
+	linetotal NUMERIC(38, 6), 
+	rowguid CHAR(36), 
+	modifieddate TIMESTAMP(3) WITHOUT TIME ZONE, 
+	encrypted_data VARCHAR(7000)
+)
+
+/*
+3 rows from salesorderdetail table:
+salesorderid	salesorderdetailid	carriertrackingnumber	orderqty	productid	specialofferid	unitprice	unitpricediscount	linetotal	rowguid	modifieddate	encrypted_data
+43659	1	4911-403C-98	1	776	1	2024.9940	0.0000	2024.994000	B207C96D-D9E6-402B-8470-2CC176C42283	2011-05-31 00:00:00	None
+43659	2	4911-403C-98	3	777	1	2024.9940	0.0000	6074.982000	7ABB600D-1E77-41BE-9FE5-B9142CFC08FA	2011-05-31 00:00:00	None
+43659	3	4911-403C-98	1	778	1	2024.9940	0.0000	2024.994000	475CF8C6-49F6-486E-B0AD-AFC6A50CDD2F	2011-05-31 00:00:00	None
+*/
+
+
+CREATE TABLE synkrino.salesorderdetail_target (
+	salesorderid INTEGER, 
+	salesorderdetailid INTEGER, 
+	carriertrackingnumber VARCHAR(25), 
+	orderqty SMALLINT, 
+	productid INTEGER, 
+	specialofferid INTEGER, 
+	unitprice NUMERIC(19, 4), 
+	unitpricediscount NUMERIC(19, 4), 
+	linetotal NUMERIC(38, 6), 
+	rowguid CHAR(36), 
+	modifieddate TIMESTAMP(3) WITHOUT TIME ZONE, 
+	encrypted_data VARCHAR(7000)
+)
+
+/*
+3 rows from salesorderdetail_target table:
+salesorderid	salesorderdetailid	carriertrackingnumber	orderqty	productid	specialofferid	unitprice	unitpricediscount	linetotal	rowguid	modifieddate	encrypted_data
+1	1	CTN001	10	101	1001	19.9900	0.0000	199.900000	123e4567-e89b-12d3-a456-426614174000	2024-12-10 12:00:00	RSR4zSJu0zaOhTwTT6fTEge/98jTQU3o4oJonCzhpkRkpRt30V1MY/iGewrBXzJL
+2	2	CTN002	5	102	1002	29.9900	5.0000	124.950000	223e4567-e89b-12d3-a456-426614174001	2024-12-10 12:05:00	hb/ptoGw7JN0WmN2ghS99B9YCZyS5qiLIX+MYDLWaEg=
+3	3	CTN003	3	103	1003	39.9900	10.0000	89.970000	323e4567-e89b-12d3-a456-426614174002	2024-12-10 12:10:00	rg3ZrvYekZEZkyT65adl1pQjxusZC9++PsRNVHYWSWKhLYdHw2bNEiYn5XxM5CoU
+*/
+
+
+CREATE TABLE synkrino.scheduling_status (
+	job_id VARCHAR(100), 
+	job_name VARCHAR(100), 
+	label VARCHAR(100), 
+	"user" VARCHAR(255), 
+	start_date TIMESTAMP(6) WITH TIME ZONE, 
+	end_date TIMESTAMP(6) WITH TIME ZONE, 
+	payload_data VARCHAR(500), 
+	execution_start_date_time TIMESTAMP(6) WITH TIME ZONE, 
+	execution_end_date_time TIMESTAMP(6) WITH TIME ZONE, 
+	elapsed_time TIME(6) WITH TIME ZONE, 
+	status VARCHAR(50)
+)
+
+/*
+3 rows from scheduling_status table:
+job_id	job_name	label	user	start_date	end_date	payload_data	execution_start_date_time	execution_end_date_time	elapsed_time	status
+
+*/
+
+
+CREATE TABLE synkrino.scheduling_status1 (
+	job_id VARCHAR(100), 
+	job_name VARCHAR(100), 
+	labels VARCHAR(100), 
+	users VARCHAR(255), 
+	start_date TIMESTAMP(6) WITH TIME ZONE, 
+	end_date TIMESTAMP(6) WITH TIME ZONE, 
+	payload_data VARCHAR(10000), 
+	execution_start_date_time TIMESTAMP(6) WITH TIME ZONE, 
+	execution_end_date_time TIMESTAMP(6) WITH TIME ZONE, 
+	elapsed_time TIME WITHOUT TIME ZONE, 
+	status VARCHAR(50), 
+	scheduling_type VARCHAR(50)
+)
+
+/*
+3 rows from scheduling_status1 table:
+job_id	job_name	labels	users	start_date	end_date	payload_data	execution_start_date_time	execution_end_date_time	elapsed_time	status	scheduling_type
+scvd007	validation_testing	validation_testing	Sreelekha.Golla@ust.com	2025-06-11 08:50:00+00:00	2025-06-11 10:50:00+00:00	"{\"validation_data\": [{\"portfolioID\": \"107\", \"projectID\": \"107000\", \"pipelineID\": \"13\"	None	None	None	Not Started	hourly
+scvd012	test	test	Sreelekha.Golla@ust.com	2025-06-11 11:43:00+00:00	2025-06-11 12:43:00+00:00	"{\"validation_data\": [{\"portfolioID\": \"107\", \"projectID\": \"107000\", \"pipelineID\": \"13\"	None	None	None	Not Started	hourly
+scvd002	new_test	abcd	Sreelekha.Golla@ust.com	2025-05-05 09:58:00+00:00	2025-05-05 18:29:00+00:00	"{\"validation_data\": [{\"portfolioID\": \"191\", \"projectID\": \"191002\", \"pipelineID\": \"334\	2025-05-05 15:44:52.506459+00:00	2025-05-05 15:44:52.579430+00:00	00:00:00	Success	hourly
+*/
+
+
+CREATE TABLE synkrino.scheduling_statuss (
+	execution_id INTEGER, 
+	job_id VARCHAR(100), 
+	job_name VARCHAR(100), 
+	labels VARCHAR(100), 
+	users VARCHAR(255), 
+	start_date TIMESTAMP(6) WITH TIME ZONE, 
+	end_date TIMESTAMP(6) WITH TIME ZONE, 
+	payload_data VARCHAR(10000), 
+	execution_start_date_time TIMESTAMP(6) WITH TIME ZONE, 
+	execution_end_date_time TIMESTAMP(6) WITH TIME ZONE, 
+	elapsed_time TIME WITHOUT TIME ZONE, 
+	status VARCHAR(50)
+)
+
+/*
+3 rows from scheduling_statuss table:
+execution_id	job_id	job_name	labels	users	start_date	end_date	payload_data	execution_start_date_time	execution_end_date_time	elapsed_time	status
+
+*/
+
+
+CREATE TABLE synkrino.source_encrypt (
+	plan_test VARCHAR(255), 
+	encrypted VARCHAR(255), 
+	key_value VARCHAR
+)
+
+/*
+3 rows from source_encrypt table:
+plan_test	encrypted	key_value
+This is a message	gAAAAABnDh3D7QrhetaBrDp041qHRnSMb-64EnaTPpicwvrfx1temBX6k6tDTd5UmN1SN3P7b-ABZMZhwOnRX8jYusTALP75wHnt	cGHjGO2RpyDMW7Ta8j_aD0rP-Psjhyqq8POO9NwBNQs=
+*/
+
+
+CREATE TABLE synkrino.source_encrypted (
+	encryption_text VARCHAR(2000), 
+	id INTEGER, 
+	name VARCHAR(200), 
+	username VARCHAR(1000)
+)
+
+/*
+3 rows from source_encrypted table:
+encryption_text	id	name	username
+TdCUR8Qu2T4dUcGRHhUvyjNztemt1Yqnjdr6SwREUJlbW9prdc5RFpzpNKCS2kuG	1	anila	anila@ust
+HMWsRfCw2PBG1kJyZlGZs6oEAAGEpsaKZHbNVG5CGC8=	2	mathew	mathew@ust
+UdXUbnUJubj2zH89oqEe2ybkO+SQNZxJj9zdzg7t3c0=	3	arun	arun@ust
+*/
+
+
+CREATE TABLE synkrino.source_metadata_validation (
+	test_execution_id INTEGER, 
+	mapping_id INTEGER, 
+	source_catalog_name VARCHAR, 
+	mapping_source_catalog_name VARCHAR, 
+	source_schema_name VARCHAR, 
+	mapping_source_schema_name VARCHAR, 
+	source_table_name VARCHAR, 
+	mapping_source_table_name VARCHAR, 
+	source_column_name VARCHAR, 
+	mapping_source_column_name VARCHAR, 
+	source_datatype VARCHAR, 
+	mapping_source_datatype VARCHAR, 
+	validation_type VARCHAR, 
+	validation_status VARCHAR, 
+	validation_details VARCHAR, 
+	last_update_date DATE
+)
+
+/*
+3 rows from source_metadata_validation table:
+test_execution_id	mapping_id	source_catalog_name	mapping_source_catalog_name	source_schema_name	mapping_source_schema_name	source_table_name	mapping_source_table_name	source_column_name	mapping_source_column_name	source_datatype	mapping_source_datatype	validation_type	validation_status	validation_details	last_update_date
+10	1048	synkrinosourcedb	synkrinosourcedb	humanresources	humanresources	employee	employee	businessentityid	businessentityid	integer	int	Source DATA TYPE	Fail	Datatype Mismatch	2023-12-15
+10	1057	synkrinosourcedb	synkrinosourcedb	humanresources	humanresources	employee	employee	organizationnode	organizationnode	varbinary	hierarchyid	Source DATA TYPE	Fail	Datatype Mismatch	2023-12-15
+10	1059	synkrinosourcedb	synkrinosourcedb	humanresources	humanresources	employee	employee	sickleavehours	sickleavehours	smallint	smallint	Source DATA TYPE	Pass	NA	2023-12-15
+*/
+
+
+CREATE TABLE synkrino.source_target_table_mapping (
+	mapping_id BIGINT NOT NULL, 
+	source_database_name TEXT, 
+	source_schema_name TEXT, 
+	source_table_name TEXT, 
+	source_column_name TEXT, 
+	source_datatype TEXT, 
+	target_database_name TEXT, 
+	target_schema_name TEXT, 
+	target_table_name TEXT, 
+	target_column_name TEXT, 
+	target_datatype TEXT, 
+	last_update_date DATE NOT NULL
+)
+
+/*
+3 rows from source_target_table_mapping table:
+mapping_id	source_database_name	source_schema_name	source_table_name	source_column_name	source_datatype	target_database_name	target_schema_name	target_table_name	target_column_name	target_datatype	last_update_date
+998	synkrinosourcedb	dbo	awbuildversion	database version	nvarchar	synkrinotargetdb	dbo	awbuildversion	database version	nvarchar	2025-07-29
+999	synkrinosourcedb	dbo	awbuildversion	modifieddate	datetime	synkrinotargetdb	dbo	awbuildversion	modifieddate	datetime	2025-07-29
+1000	synkrinosourcedb	dbo	awbuildversion	systeminformationid	tinyint	synkrinotargetdb	dbo	awbuildversion	systeminformationid	tinyint	2025-07-29
+*/
+
+
+CREATE TABLE synkrino.source_target_table_mapping_intr (
+	mapping_id INTEGER, 
+	source_database_name TEXT, 
+	source_schema_name TEXT, 
+	source_table_name TEXT, 
+	source_column_name TEXT, 
+	target_database_name TEXT, 
+	target_schema_name TEXT, 
+	target_table_name TEXT, 
+	target_column_name TEXT, 
+	last_update_date DATE
+)
+
+/*
+3 rows from source_target_table_mapping_intr table:
+mapping_id	source_database_name	source_schema_name	source_table_name	source_column_name	target_database_name	target_schema_name	target_table_name	target_column_name	last_update_date
+1668	synkrinosourcedb	humanresources	employee	businessentityid	synkrinotargetdb	humanresources	employee	businessentityid	2024-05-16
+1668	synkrinosourcedb	humanresources	employee	gender	synkrinotargetdb	humanresources	employee	gender	2024-05-16
+1669	synkrinosourcedb	humanresources	employee	hiredate	synkrinotargetdb	humanresources	employee	hiredate	2024-05-16
+*/
+
+
+CREATE TABLE synkrino.source_target_table_mapping_intr_temp (
+	mapping_id INTEGER, 
+	source_database_name TEXT, 
+	source_schema_name TEXT, 
+	source_table_name TEXT, 
+	source_column_name TEXT, 
+	target_database_name TEXT, 
+	target_schema_name TEXT, 
+	target_table_name TEXT, 
+	target_column_name TEXT, 
+	last_update_date DATE
+)
+
+/*
+3 rows from source_target_table_mapping_intr_temp table:
+mapping_id	source_database_name	source_schema_name	source_table_name	source_column_name	target_database_name	target_schema_name	target_table_name	target_column_name	last_update_date
+1668	synkrinosourcedb	humanresources	employee	businessentityid	synkrinotargetdb	humanresources	employee	businessentityid	2024-05-16
+1668	synkrinosourcedb	humanresources	employee	gender	synkrinotargetdb	humanresources	employee	gender	2024-05-16
+1669	synkrinosourcedb	humanresources	employee	hiredate	synkrinotargetdb	humanresources	employee	hiredate	2024-05-16
+*/
+
+
+CREATE TABLE synkrino.source_target_table_mapping_new (
+	mapping_id BIGINT NOT NULL, 
+	source_database_name TEXT, 
+	source_schema_name TEXT, 
+	source_table_name TEXT, 
+	source_column_name TEXT, 
+	source_datatype TEXT, 
+	target_database_name TEXT, 
+	target_schema_name TEXT, 
+	target_table_name TEXT, 
+	target_column_name TEXT, 
+	target_datatype TEXT, 
+	last_update_date DATE NOT NULL
+)
+
+/*
+3 rows from source_target_table_mapping_new table:
+mapping_id	source_database_name	source_schema_name	source_table_name	source_column_name	source_datatype	target_database_name	target_schema_name	target_table_name	target_column_name	target_datatype	last_update_date
+998	synkrinosourcedb	dbo	awbuildversion	database version	nvarchar	synkrinotargetdb	dbo	awbuildversion	database version	nvarchar	2024-01-15
+999	synkrinosourcedb	dbo	awbuildversion	modifieddate	datetime	synkrinotargetdb	dbo	awbuildversion	modifieddate	datetime	2024-01-15
+1000	synkrinosourcedb	dbo	awbuildversion	systeminformationid	tinyint	synkrinotargetdb	dbo	awbuildversion	systeminformationid	tinyint	2024-01-15
+*/
+
+
+CREATE TABLE synkrino.table_details_analysis_v3 (
+	table_id INTEGER, 
+	config_id INTEGER, 
+	file_name VARCHAR(200), 
+	table_name VARCHAR(200), 
+	table_version VARCHAR(200), 
+	portfolio_id INTEGER, 
+	project_id INTEGER, 
+	is_enabled BOOLEAN, 
+	file_type INTEGER, 
+	file_path VARCHAR(200), 
+	status VARCHAR(200), 
+	created_at TIMESTAMP(6) WITHOUT TIME ZONE, 
+	updated_at TIMESTAMP(6) WITHOUT TIME ZONE, 
+	label VARCHAR(200)
+)
+
+/*
+3 rows from table_details_analysis_v3 table:
+table_id	config_id	file_name	table_name	table_version	portfolio_id	project_id	is_enabled	file_type	file_path	status	created_at	updated_at	label
+1	2	Employee table _p100_pr100000_v100.json	Employee table 	1.0.0	100	100000	True	4	static//analytics	1	2025-04-23 19:33:26.842130	2025-04-23 19:33:26.842134	None
+2	2	person_person_p100_pr100000_v100.json	person_person	1.0.0	100	100000	True	4	static//analytics	1	2025-04-23 19:41:16.004714	2025-04-23 19:41:16.004716	None
+4	4	demo_p104_pr104000_v101.json	demo	1.0.1	104	104000	True	4	static//analytics	1	2025-05-29 06:22:05.277021	2025-05-29 06:22:05.277021	None
+*/
+
+
+CREATE TABLE synkrino.table_information (
+	catalog_name VARCHAR(255), 
+	schema_name VARCHAR(255), 
+	table_name VARCHAR(255), 
+	null_count INTEGER, 
+	duplicate_count INTEGER, 
+	data_quality DOUBLE PRECISION, 
+	last_update_date DATE, 
+	attributes VARCHAR
+)
+
+/*
+3 rows from table_information table:
+catalog_name	schema_name	table_name	null_count	duplicate_count	data_quality	last_update_date	attributes
+synkrinosourcedb	sales	currency	0	104	75.23809814453125	2024-07-23	None
+synkrinosourcedb	sales	currencyrate	0	65623	65.36094665527344	2024-07-23	None
+synkrinosourcedb	sales	vpersondemographics	16368	225627	53.397254943847656	2024-07-23	None
+*/
+
+
+CREATE TABLE synkrino.table_information_v2 (
+	catalog_name TEXT, 
+	schema_name TEXT, 
+	table_name TEXT, 
+	row_count INTEGER, 
+	data_quality REAL, 
+	null_count INTEGER, 
+	duplicate_count INTEGER, 
+	"Attributes" TEXT, 
+	"Last_Update_Date" TIMESTAMP WITHOUT TIME ZONE NOT NULL
+)
+
+/*
+3 rows from table_information_v2 table:
+catalog_name	schema_name	table_name	row_count	data_quality	null_count	duplicate_count	Attributes	Last_Update_Date
+
+*/
+
+
+CREATE TABLE synkrino.table_information_v2_duplicate (
+	catalog_name TEXT, 
+	schema_name TEXT, 
+	table_name TEXT, 
+	row_count INTEGER, 
+	data_quality REAL, 
+	null_count INTEGER, 
+	duplicate_count INTEGER, 
+	"Attributes" TEXT, 
+	"Last_Update_Date" TIMESTAMP WITHOUT TIME ZONE NOT NULL
+)
+
+/*
+3 rows from table_information_v2_duplicate table:
+catalog_name	schema_name	table_name	row_count	data_quality	null_count	duplicate_count	Attributes	Last_Update_Date
+synkrinosourcedb	production	product	504	43.258476	3571	9012	integer,varchar,smallint,decimal,char,timestamp	2024-08-22 14:10:42.331336
+synkrinosourcedb	production	document	13	75.0	12	79	varbinary,smallint,varchar,integer,boolean,char,tinyint,timestamp	2024-08-22 14:10:42.331336
+synkrinosourcedb	production	unitmeasure	38	75.6579	0	37	char,timestamp	2024-08-22 14:10:42.331336
+*/
+
+
+CREATE TABLE synkrino.table_trail (
+	catalog_name VARCHAR(255), 
+	schema_name VARCHAR(255), 
+	table_name VARCHAR(255), 
+	row_count INTEGER, 
+	data_quality DOUBLE PRECISION, 
+	null_count INTEGER, 
+	duplicate_count INTEGER, 
+	attributes DOUBLE PRECISION, 
+	last_update_date DATE
+)
+
+/*
+3 rows from table_trail table:
+catalog_name	schema_name	table_name	row_count	data_quality	null_count	duplicate_count	attributes	last_update_date
+
+*/
+
+
+CREATE TABLE synkrino.target_encrypt (
+	plan_test VARCHAR(255), 
+	encrypted VARCHAR(255), 
+	key_value VARCHAR(255)
+)
+
+/*
+3 rows from target_encrypt table:
+plan_test	encrypted	key_value
+This is a message	gAAAAABnDh5gEhlTuHuH4b-mIgxfcBEqrkNGa1Bq0jv9naSv6I5apxtIW8SrriyWNHmfO62dbmxNZKNL0gWM3BLL3YVtRMCiDT_j	cGHjGO2RpyDMW7Ta8j_aD0rP-Psjhyqq8POO9NwBNQs=
+*/
+
+
+CREATE TABLE synkrino.target_encrypted (
+	encryption_text VARCHAR(2000), 
+	id INTEGER, 
+	name VARCHAR(200), 
+	username VARCHAR(1000)
+)
+
+/*
+3 rows from target_encrypted table:
+encryption_text	id	name	username
+RSR4zSJu0zaOhTwTT6fTEge/98jTQU3o4oJonCzhpkRkpRt30V1MY/iGewrBXzJL	1	anila	anila@ust
+hb/ptoGw7JN0WmN2ghS99B9YCZyS5qiLIX+MYDLWaEg=	2	mathew	mathew@ust
+rg3ZrvYekZEZkyT65adl1pQjxusZC9++PsRNVHYWSWKhLYdHw2bNEiYn5XxM5CoU	3	arun	arun@ust
+*/
+
+
+CREATE TABLE synkrino.target_metadata_validation (
+	test_execution_id INTEGER, 
+	mapping_id INTEGER, 
+	target_catalog_name VARCHAR, 
+	mapping_target_catalog_name VARCHAR, 
+	target_schema_name VARCHAR, 
+	mapping_target_schema_name VARCHAR, 
+	target_table_name VARCHAR, 
+	mapping_target_table_name VARCHAR, 
+	target_column_name VARCHAR, 
+	mapping_target_column_name VARCHAR, 
+	target_datatype VARCHAR, 
+	mapping_target_datatype VARCHAR, 
+	validation_type VARCHAR, 
+	validation_status VARCHAR, 
+	validation_details VARCHAR, 
+	last_update_date DATE
+)
+
+/*
+3 rows from target_metadata_validation table:
+test_execution_id	mapping_id	target_catalog_name	mapping_target_catalog_name	target_schema_name	mapping_target_schema_name	target_table_name	mapping_target_table_name	target_column_name	mapping_target_column_name	target_datatype	mapping_target_datatype	validation_type	validation_status	validation_details	last_update_date
+10	1057	snowflake	snowflake	humanresources	humanresources	employee	employee	organizationnode	organizationnode	varbinary	varbinary	Target DATA TYPE	Pass	NA	2023-12-20
+10	1055	snowflake	snowflake	humanresources	humanresources	employee	employee	nationalidnumber	nationalidnumber	varchar	nvarchar	Target DATA TYPE	Fail	Datatype Mismatch	2023-12-20
+10	1052	snowflake	snowflake	humanresources	humanresources	employee	employee	loginid	loginid	varchar	nvarchar	Target DATA TYPE	Fail	Datatype Mismatch	2023-12-20
+*/
+
+
+CREATE TABLE synkrino.tbl_audit_data (
+	json_id TEXT, 
+	json_label TEXT, 
+	server_name TEXT, 
+	schema_name TEXT, 
+	table_name TEXT, 
+	query_text TEXT, 
+	error_desc TEXT, 
+	process_date DATE NOT NULL
+)
+
+/*
+3 rows from tbl_audit_data table:
+json_id	json_label	server_name	schema_name	table_name	query_text	error_desc	process_date
+ID_Success	Wrapper_Column_Table_Updated	All	All	All	Success	The code run Successfully	2023-11-23
+ID_Success	Wrapper_Column_Table_Updated	All	All	All	Success	The code run Successfully	2023-11-28
+ID_Success	Wrapper_Column_Table_Updated	All	All	All	Success	The code run Successfully	2023-11-28
+*/
+
+
+CREATE TABLE synkrino.tbl_audit_data2 (
+	json_id TEXT, 
+	json_label TEXT, 
+	server_name TEXT, 
+	schema_name TEXT, 
+	table_name TEXT, 
+	operation_type TEXT, 
+	column_name TEXT, 
+	column_value TEXT, 
+	grp_by_name TEXT, 
+	grp_by_val TEXT, 
+	filtercaluse TEXT, 
+	process_datetime TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	process_date DATE NOT NULL
+)
+
+/*
+3 rows from tbl_audit_data2 table:
+json_id	json_label	server_name	schema_name	table_name	operation_type	column_name	column_value	grp_by_name	grp_by_val	filtercaluse	process_datetime	process_date
+104	Count, Max and sum for safetystocklevel and reorderpoint	synkrinosourcedb	production	product	COUNT	safetystocklevel	504		0		2024-01-30 05:46:54.249573	2024-01-30
+104	Count, Max and sum for safetystocklevel and reorderpoint	synkrinosourcedb	production	product	MAX	safetystocklevel	1000		0		2024-01-30 05:46:54.249573	2024-01-30
+104	Count, Max and sum for safetystocklevel and reorderpoint	synkrinosourcedb	production	product	SUM	safetystocklevel	269716		0		2024-01-30 05:46:54.249573	2024-01-30
+*/
+
+
+CREATE TABLE synkrino.trail_exceution_analysis (
+	execution_id INTEGER, 
+	json_id INTEGER, 
+	portfolio_id INTEGER, 
+	project_id INTEGER, 
+	catalog_name VARCHAR(255), 
+	schema_name VARCHAR(255), 
+	table_name VARCHAR(255), 
+	operation_type VARCHAR(255), 
+	operations VARCHAR(255), 
+	column_name VARCHAR(255), 
+	column_value NUMERIC(18, 6), 
+	groupby_name VARCHAR(255), 
+	groupby_value VARCHAR(255), 
+	filter_clause VARCHAR(255), 
+	execution_date DATE, 
+	execution_datetime TIMESTAMP(6) WITHOUT TIME ZONE, 
+	execution_starttime TIME WITHOUT TIME ZONE, 
+	execution_endtime TIME WITHOUT TIME ZONE, 
+	execution_elapsed_time VARCHAR(255)
+)
+
+/*
+3 rows from trail_exceution_analysis table:
+execution_id	json_id	portfolio_id	project_id	catalog_name	schema_name	table_name	operation_type	operations	column_name	column_value	groupby_name	groupby_value	filter_clause	execution_date	execution_datetime	execution_starttime	execution_endtime	execution_elapsed_time
+1001	101	100	100001	Synkrinotargetdb	sales	salesorderdetail	tableLevel	CountCheck	ALL	290.000000	None	None	None	2024-12-01	2025-02-17 00:00:00	02:08:00	02:09:00	0.000726805555555556
+1002	101	100	100001	Synkrinotargetdb	sales	salesorderdetail	tableLevel	AttributeCheck	ALL	6.000000	None	None	None	2024-12-01	2025-02-17 00:00:00	02:08:00	02:09:00	0.000726805555555556
+1003	101	100	100001	Synkrinotargetdb	sales	salesorderdetail	columnLevel	duplicateCheck	salesorderid	234.000000	product_id	1234	None	2024-12-01	2025-02-17 00:00:00	02:08:00	02:09:00	0.000726805555555556
+*/
+
+
+CREATE TABLE synkrino.users (
+	id SERIAL NOT NULL, 
+	name VARCHAR NOT NULL, 
+	email VARCHAR NOT NULL, 
+	password VARCHAR NOT NULL, 
+	is_enabled BOOLEAN DEFAULT false NOT NULL, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	CONSTRAINT users_pkey PRIMARY KEY (id), 
+	CONSTRAINT users_email_key UNIQUE NULLS DISTINCT (email)
+)
+
+/*
+3 rows from users table:
+id	name	email	password	is_enabled	created_at	updated_at
+1	lakshmi	lakshmi@example.com	$2b$12$DLIcbaYsI8RlsxNPweqoVewJLVmk7eZE71xSAAXv7AQGLgO.eGRTu	True	2023-10-26 07:46:39.546034+00:00	2023-10-26 07:46:39.546034+00:00
+2	Hari	hari@example.com	$2b$12$HunvBk1MVMhq4noY0nabAu/Q/CnXROjdbk3FC/CsnXx.TJjtYB63a	True	2023-10-30 13:04:15.768297+00:00	2023-10-30 13:04:15.768297+00:00
+3	farsana	farsana@example.com	$2b$12$6S6abtYWDZOOj/3IgkRmceRmzEJcUL5M2vXxRu.B5Wtyqr4PBXVre	True	2023-10-31 10:06:25.865776+00:00	2023-10-31 10:06:25.865776+00:00
+*/
+
+
+CREATE TABLE synkrino.validation_scenario_list_v2 (
+	id SERIAL NOT NULL, 
+	pipeline_id INTEGER, 
+	pipeline_version VARCHAR(200), 
+	validationlevel VARCHAR(200), 
+	operation_id VARCHAR(200), 
+	label VARCHAR(200), 
+	CONSTRAINT validation_scenario_list_v2_pkey PRIMARY KEY (id)
+)
+
+/*
+3 rows from validation_scenario_list_v2 table:
+id	pipeline_id	pipeline_version	validationlevel	operation_id	label
+955	1	1.0.0	objectLevel	123	Connection configuration for Synkrino source db
+956	1	1.0.0	objectLevel	123	Connection configuration for Synkrino target db
+957	1	1.0.0	metadataLevel	123	Connection configuration for Synkrino source db
+*/
+
+
+CREATE TABLE synkrino.version_history (
+	id SERIAL NOT NULL, 
+	config_id INTEGER, 
+	changed_by_user_id INTEGER, 
+	changed_on TIMESTAMP WITHOUT TIME ZONE, 
+	description VARCHAR(200), 
+	change_approved_by_user_id INTEGER, 
+	CONSTRAINT version_history_pkey PRIMARY KEY (id), 
+	CONSTRAINT version_history_change_approved_by_user_id_fkey FOREIGN KEY(change_approved_by_user_id) REFERENCES synkrino.users (id), 
+	CONSTRAINT version_history_changed_by_user_id_fkey FOREIGN KEY(changed_by_user_id) REFERENCES synkrino.users (id), 
+	CONSTRAINT version_history_config_id_fkey FOREIGN KEY(config_id) REFERENCES synkrino.config_data_table (id)
+)
+
+/*
+3 rows from version_history table:
+id	config_id	changed_by_user_id	changed_on	description	change_approved_by_user_id
+
+*/
